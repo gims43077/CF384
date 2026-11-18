@@ -1,0 +1,25 @@
+{
+  "backbone": {
+    "repository": "OwensLab/commfor-model-384",
+    "revision": "6076002bf0d9dd37537f965ee2f06f826c333b61",
+    "url": "https://huggingface.co/OwensLab/commfor-model-384/resolve/6076002bf0d9dd37537f965ee2f06f826c333b61/model.safetensors",
+    "sha256": "b89f36275f3bf5e2b040eee36597a8f19db051bff9a473a9cf7b2466284fb387",
+    "license": "MIT, per official model card"
+  },
+  "head": {
+    "file": "l2sp_aug_mean.npz",
+    "sha256": "c7595c7b504e1195effe31600e8bebe3527812d9c5a93560bc71d9e5e2b42adb",
+    "method": "L2-SP + two seeded augmentation views, frozen backbone, equal mean of 4 fold heads",
+    "training_date": "2026-11-17",
+    "training_data": "CommunityForensics-Eval subset, CC-BY-NC-SA-4.0 and source conditions",
+    "deployment_status": "Research candidate; no universal accuracy guarantee"
+  },
+  "preprocess": "EXIF/RGB -> full512 bilinear -> JPEG95/420 -> Resize440/CenterCrop384 -> ImageNet norm",
+  "lowres_head": {
+    "file": "l2sp_aug_lowres_mean.npz",
+    "sha256": "4d4b0afa8257172a42740a01fd81d353dc8e232d670bd43d4eede2a99be54886",
+    "training_date": "2026-11-18",
+    "method": "L2-SP + existing three training views + two160-300px downsampling views; equal4-fold mean",
+    "default_model_changed": false
+  }
+}

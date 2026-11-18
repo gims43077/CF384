@@ -1,0 +1,38 @@
+# Local secrets and credentials
+.runtime/
+.env
+.env.*
+!.env.example
+*api_key*.txt
+*token*.txt
+*.pem
+*.key
+credentials*.json
+
+# Environments, caches and generated reports
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.DS_Store
+*.log
+*.xml
+verification/
+MANIFEST.sha256
+
+# Large/downloaded models and private example data
+models/*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.zip
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.tif
+*.tiff
+*.bmp
+*.gif

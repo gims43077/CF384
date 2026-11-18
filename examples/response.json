@@ -1,0 +1,45 @@
+{
+  "api_version": "1.1.0",
+  "request_id": "cbe86009-533f-483b-95f4-55534f07a3a6",
+  "model_id": "cf384-l2sp-aug-lowres-mean4-20261118",
+  "selected_model": "lowres",
+  "result": {
+    "score_ai": 0.18763892352581024,
+    "prediction": 0,
+    "label": "real"
+  },
+  "scores": {
+    "original": {
+      "score_ai": 0.007029014639556408,
+      "prediction": 0,
+      "label": "real"
+    },
+    "adapted": {
+      "score_ai": 0.022700021043419838,
+      "prediction": 0,
+      "label": "real"
+    },
+    "lowres": {
+      "score_ai": 0.18763892352581024,
+      "prediction": 0,
+      "label": "real"
+    }
+  },
+  "threshold": 0.5,
+  "score_kind": "uncalibrated_model_score",
+  "cached": false,
+  "image": {
+    "width": 160,
+    "height": 160,
+    "format": "PNG",
+    "sha256": "12176ad5a529b825c6b3c71d6dfa4d291850e4137697a128d56fce04230ca38f",
+    "bytes": 451
+  },
+  "timing": {
+    "queue_ms": 0.11704199999940101,
+    "preprocess_ms": 14.155125000000268,
+    "inference_ms": 99.5225839999998,
+    "total_ms": 114.2397079999995
+  },
+  "notice": "Research model score, not a calibrated probability or proof of image authenticity."
+}
