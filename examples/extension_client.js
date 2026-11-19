@@ -2,7 +2,7 @@
 export async function predictBlob(blob, {
   apiKey,
   baseUrl = 'http://127.0.0.1:8000',
-  model = 'adapted',
+  model = 'lowres',
   timeoutMs = 30000,
 } = {}) {
   if (!apiKey) throw new Error('API key is required');

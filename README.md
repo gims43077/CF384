@@ -24,7 +24,7 @@ python3.11 -m venv .venv
 .venv/bin/python client.py --show-key
 ```
 
-http://127.0.0.1:8000/demo 에 접속해 키를 입력하고 사진을 선택합니다. 작은 사진은 대표 결과에서 **160~300px 축소 학습 추가 후보**를 선택합니다. 종료는 서버 터미널에서Ctrl+C입니다.
+http://127.0.0.1:8000/demo 에 접속해 키를 입력하고 사진을 선택합니다. 대표 결과는 **L2-SP + 증강 + 160~300px 학습 (기본)**이 자동 선택됩니다. 종료는 서버 터미널에서Ctrl+C입니다.
 
 ### Windows PowerShell
 
@@ -47,19 +47,26 @@ Linux는 동일한가상환경구성을사용하며, CPU전용PyTorch는Windows�
 
 처음키는각설치폴더의`.runtime/api_key.txt`에자동생성됩니다. 이폴더는Git에서제외됩니다. `CF384_API_KEY`환경변수를설정하면파일보다우선합니다. 키문자열만입력하고`Bearer`나`X-API-Key:`를앞에붙이지마세요. 서버시작후모델이준비돼야분석할수있습니다.
 
+## 이번 업데이트 (2026-11-19 / API1.2.0)
+
+최신 `lowres`를 API·Python·JS·데모 기본값으로 적용했습니다. 가중치와 임계값0.5는 그대로입니다. 기존 확장이 `model=adapted`를 명시한다면 `lowres`로 바꾸거나 query를 생략해야 합니다.
+
+실제 웹 썸네일64장(긴 변160~280px)에서 기존 head85.94% → 최신 head90.63%, 실사 오탐0/32 →2/32였습니다. 추가JPEG85에서는 최신 head81.25%입니다. Google 썸네일은 아니며 작은 표본으로 웹 전체 성능을 보장하지 않습니다. [지금까지 작업 요약](docs/WORK_SUMMARY_KO.md) · [측정 CSV](docs/evaluation/web_thumbnail_metrics.csv).
+
 ## API
 
 | URL | 역할 |
 |---|---|
 |`GET /health`|준비상태|
 |`GET /v1/model`|모델설명·SHA256·장치|
+|`POST /v1/predict`|최신 lowres가 기본 결과|
 |`POST /v1/predict?model=adapted`|기존개선head를대표결과로선택|
 |`POST /v1/predict?model=lowres`|축소학습head를대표결과로선택|
 |`POST /v1/predict?model=original`|원본CFhead를대표결과로선택|
 |`GET /docs`|Swagger UI|
 |`GET /openapi.json`|API스키마|
 
-`/v1/*`는`X-API-Key`가필요하며, 예측요청은multipart의`file`필드한개를받습니다. 기본대표모델은`adapted`, 모든응답에`original/adapted/lowres`점수를함께반환합니다. 파일10MiB/40MP한도, 단일JPEG/PNG/WEBP/TIFF/BMP지원. API가URL을대신다운로드하지않습니다.
+`/v1/*`는`X-API-Key`가필요하며, 예측요청은multipart의`file`필드한개를받습니다. 기본대표모델은`lowres`, 모든응답에`original/adapted/lowres`점수를함께반환합니다. 파일10MiB/40MP한도, 단일JPEG/PNG/WEBP/TIFF/BMP지원. API가URL을대신다운로드하지않습니다.
 
 확장개발자: [API계약](docs/EXTENSION_API.md), [JS예제](examples/extension_client.js), [OpenAPI](openapi.json).
 
@@ -79,7 +86,7 @@ Linux는 동일한가상환경구성을사용하며, CPU전용PyTorch는Windows�
 
 ## 학습과 한계
 
-기존head는동결CF특징에L2-SP+후처리증강을적용한4fold head의동일평균입니다. lowres head는기존원본+2view에160~300px축소2view를추가학습했습니다. 기본모드는교체하지않고명시선택합니다.
+기존head는동결CF특징에L2-SP+후처리증강을적용한4fold head의동일평균입니다. lowres head는기존원본+2view에160~300px축소2view를추가학습했습니다. API1.2.0부터 lowres가 기본이며 이전 head는 비교용으로 명시 선택합니다.
 
 저해상도추가후기존평가160px정확도는64.06→77.19%였지만실제사진오탐도1.88→15.63%로증가했습니다. 이미사용한사진의합성축소평가로,새웹이미지성능보장이아닙니다. 점수는보정된확률/진위인증이아닙니다. 세부사항: [저해상도변경](docs/LOWRES_UPDATE.md), [동작원리](docs/HOW_IT_WORKS.md).
 

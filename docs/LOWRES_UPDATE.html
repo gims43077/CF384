@@ -1,0 +1,80 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:16px/1.7 system-ui,sans-serif;max-width:1050px;margin:36px auto;padding:15px}table{border-collapse:collapse}td,th{padding:7px;border:1px solid #ddd}pre{background:#f4f6f8;padding:15px;overflow:auto}a{color:#087e8b}</style><h1 id="160~300px-%EC%9E%91%EC%9D%80-%EC%9D%B4%EB%AF%B8%EC%A7%80%EC%9A%A9-head-%EC%B6%94%EA%B0%80">160~300px &#51089;&#51008; &#51060;&#48120;&#51648;&#50857; head &#52628;&#44032;<a class="anchor-link" href="#160~300px-%EC%9E%91%EC%9D%80-%EC%9D%B4%EB%AF%B8%EC%A7%80%EC%9A%A9-head-%EC%B6%94%EA%B0%80">&#182;</a></h1><p>2026-11-19 배포 업데이트. API1.2.0 / 패키지모델ID <code>cf384-l2sp-aug-lowres-default-20261119</code>. 2026-11-18에 학습한 가중치를 그대로 기본 모델에 적용했다. 새 학습이나 임계값 변경은 없다.</p>
+<h2 id="%EC%82%AC%EC%9A%A9%EB%B2%95">&#49324;&#50857;&#48277;<a class="anchor-link" href="#%EC%82%AC%EC%9A%A9%EB%B2%95">&#182;</a></h2><p>서버를 Ctrl+C로 종료하고 다시 실행한 뒤 브라우저를 새로고침한다. <code>/demo</code>는 **L2-SP + 증강 + 160~300px 학습 (기본)**이 자동 선택된다. API의 <code>model</code>을 생략해도 <code>lowres</code>를 사용한다. 기존 head는 <code>model=adapted</code>로 비교할 수 있다.</p>
+<p>API:</p>
+<div class="highlight"><pre><span></span><span class="err">POST /v1/predict?model=lowres</span>
+<span class="err">X-API-Key: &lt;기존 키&gt;</span>
+</pre></div>
+<p>입력은기존과같은multipart<code>file</code>필드다. CLI는프로젝트폴더안에서:</p>
+<div class="highlight"><pre><span></span>.venv/bin/python<span class="w"> </span>client.py<span class="w"> </span>my_small_photo.jpg<span class="w"> </span>--model<span class="w"> </span>lowres
+</pre></div>
+<p>Windows:</p>
+<div class="highlight"><pre><span></span><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">client</span><span class="p">.</span><span class="n">py</span> <span class="n">my_small_photo</span><span class="p">.</span><span class="n">jpg</span> <span class="p">-</span><span class="n">-model</span> <span class="n">lowres</span>
+</pre></div>
+<h2 id="%ED%95%99%EC%8A%B5%EC%97%90%EC%84%9C-%EB%8B%AC%EB%9D%BC%EC%A7%84-%EA%B2%83">&#54617;&#49845;&#50640;&#49436; &#45804;&#46972;&#51652; &#44163;<a class="anchor-link" href="#%ED%95%99%EC%8A%B5%EC%97%90%EC%84%9C-%EB%8B%AC%EB%9D%BC%EC%A7%84-%EA%B2%83">&#182;</a></h2><ul>
+<li>CF384백본은그대로동결, 선형head의385개파라미터만다시학습했다.</li>
+<li>기존원본+aug0+aug1을보존하고,160~300px로축소하는lowres0/lowres1을추가했다.</li>
+<li>각view는좌우반전50% → 한변160~300정수균일축소 → JPEG60~95를50%확률로적용 → 실제API처럼512/JPEG95 → CF전처리다.</li>
+<li>원본280장/fold에서입력view840→1400개. 독립사진1400장을확보한것은아니다.</li>
+<li>λ=.01/.1/1/10을train에서학습하고, val의50%기존3조건평균+50%lowres2조건평균으로선택했다. threshold.5고정. test를보며λ/임계값을맞추지않았다.</li>
+<li>4개foldhead를동일비율평균한새가중치를<code>models/l2sp_aug_lowres_mean.npz</code>에저장했다. 기존<code>l2sp_aug_mean.npz</code>와원본CF는교체하지않았다.</li>
+<li>세분류기는같은CF특징을사용하므로이미지당큰백본을추가로실행하지않는다. API는입력크기로모델을자동선택하지않는다.</li>
+</ul>
+<h2 id="%EC%8B%A4%EC%A0%9C-%EC%9B%B9-%EC%8D%B8%EB%84%A4%EC%9D%BC-%EC%B6%94%EA%B0%80-%ED%8F%89%EA%B0%80-(2026-11-19)">&#49892;&#51228; &#50937; &#50040;&#45348;&#51068; &#52628;&#44032; &#54217;&#44032; (2026-11-19)<a class="anchor-link" href="#%EC%8B%A4%EC%A0%9C-%EC%9B%B9-%EC%8D%B8%EB%84%A4%EC%9D%BC-%EC%B6%94%EA%B0%80-%ED%8F%89%EA%B0%80-(2026-11-19)">&#182;</a></h2><p>실사32/생성32, 실제 긴 변160~280px의 Wikimedia CDN 파일에서 기존 head85.94% → 최신 head90.63%였다. 실사 오탐은0/32 →2/32, AI 누락은9/32 →4/32. 동일 파일에 추가 JPEG85를 적용하면 최신 head81.25%로 내려갔다. Google 서버 썸네일은 아니며 소규모 관측이다. 자세한 한계와 측정표는 <a href="WORK_SUMMARY_KO.md">작업 요약</a>.</p>
+<h2 id="%EC%9D%B4%EC%A0%84-%ED%95%A9%EC%84%B1-%EC%B6%95%EC%86%8C-%EC%B8%A1%EC%A0%95-%EA%B2%B0%EA%B3%BC">&#51060;&#51204; &#54633;&#49457; &#52629;&#49548; &#52769;&#51221; &#44208;&#44284;<a class="anchor-link" href="#%EC%9D%B4%EC%A0%84-%ED%95%A9%EC%84%B1-%EC%B6%95%EC%86%8C-%EC%B8%A1%EC%A0%95-%EA%B2%B0%EA%B3%BC">&#182;</a></h2><p>작은test입력은기존이미지를해당한변으로축소/JPEG85로저장한뒤API512/JPEG95전처리한합성열화다. 실제웹썸네일을새로수집한평가는아니다.</p>
+<table>
+<thead>
+<tr>
+  <th>입력</th>
+  <th style="text-align:right">기존개선head</th>
+  <th style="text-align:right">축소추가head</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>기존4계열,160px</td>
+  <td style="text-align:right">64.06%</td>
+  <td style="text-align:right">77.19%</td>
+</tr>
+<tr>
+  <td>기존4계열,224px</td>
+  <td style="text-align:right">80.63%</td>
+  <td style="text-align:right">85.94%</td>
+</tr>
+<tr>
+  <td>기존4계열,300px</td>
+  <td style="text-align:right">89.38%</td>
+  <td style="text-align:right">91.56%</td>
+</tr>
+<tr>
+  <td>기존4계열,기본512</td>
+  <td style="text-align:right">94.69%</td>
+  <td style="text-align:right">95.31%</td>
+</tr>
+<tr>
+  <td>외부100장재사용,160px</td>
+  <td style="text-align:right">50%</td>
+  <td style="text-align:right">67%</td>
+</tr>
+<tr>
+  <td>외부100장재사용,224px</td>
+  <td style="text-align:right">56%</td>
+  <td style="text-align:right">72%</td>
+</tr>
+<tr>
+  <td>외부100장재사용,300px</td>
+  <td style="text-align:right">66%</td>
+  <td style="text-align:right">74%</td>
+</tr>
+<tr>
+  <td>외부100장재사용,기본512</td>
+  <td style="text-align:right">81%</td>
+  <td style="text-align:right">84%</td>
+</tr>
+</tbody>
+</table>
+<p>외부100장은학습/선택에는사용하지않았지만과거평가에서이미본사진이다. 기존4계열의실제40장도fold간반복되므로대규모독립검증이아니다. 원본CF의학습노출은미확인이다.</p>
+<p><strong>오탐 tradeoff:</strong> 기존4계열160px 조건에서실제사진오탐은1.88→15.63%로늘었고AI누락은70→30%로줄었다. ROC-AUC도.8283→.8864로개선됐지만,정확도상승만으로오탐문제가해결됐다고볼수없다. 기본512조건FPR은두head모두3.75%였다.</p>
+<p>160px외부조건에서새head의실제오탐은4%,AI누락은62%다. 정확도가개선됐어도작은이미지의생성흔적이사라지는문제는남는다. 점수만으로진위를확정하거나확대가정보를복구했다고해석하지않는다. 저해상도후보의실제사진오탐/기본조건tradeoff도전체표에서확인해야한다.</p>
+<h2 id="%EC%9E%AC%ED%98%84%EA%B3%BC%EA%B2%80%EC%A6%9D">&#51116;&#54788;&#44284;&#44160;&#51613;<a class="anchor-link" href="#%EC%9E%AC%ED%98%84%EA%B3%BC%EA%B2%80%EC%A6%9D">&#182;</a></h2><p>실험은<code>ai_image_eval/lowres_adaptation/</code>에별도로저장했다. <code>extract_features.py</code>, <code>train_evaluate.py</code>, <code>PROTOCOL.md</code>, <code>LowRes_Head_Training.ipynb</code>가추출/학습/설정/재현을담고있다. <code>results/per_family.csv</code>, <code>external_metrics.csv</code>는전체지표와혼동행렬, <code>predictions.csv</code>, <code>external_predictions.csv</code>, <code>image_changes.csv</code>는이미지별점수다.</p>
+<p>API의기존2개점수일치검사는유지하고,160px파일의새lowres점수를실험특징캐시계산과대조하는테스트를추가했다. 모델파일의SHA256도검사한다. 원본프로젝트의실제HTTP/독립실행검증로그는공개사본에포함하지않았다. 서버요청중학습/다운로드는하지않는다.</p>
+</html>

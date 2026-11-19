@@ -1,0 +1,51 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:16px/1.7 system-ui,sans-serif;max-width:1050px;margin:36px auto;padding:15px}table{border-collapse:collapse}td,th{padding:7px;border:1px solid #ddd}pre{background:#f4f6f8;padding:15px;overflow:auto}a{color:#087e8b}</style><h1 id="%EA%B0%84%EB%8B%A8-%EC%82%AC%EC%9A%A9%EB%B2%95:-GitHub%EC%97%90%EC%84%9C-%EB%B0%9B%EC%95%84-%EC%B5%9C%EC%8B%A0-%EB%AA%A8%EB%8D%B8-%EC%8B%A4%ED%96%89%ED%95%98%EA%B8%B0">&#44036;&#45800; &#49324;&#50857;&#48277;: GitHub&#50640;&#49436; &#48155;&#50500; &#52572;&#49888; &#47784;&#45944; &#49892;&#54665;&#54616;&#44592;<a class="anchor-link" href="#%EA%B0%84%EB%8B%A8-%EC%82%AC%EC%9A%A9%EB%B2%95:-GitHub%EC%97%90%EC%84%9C-%EB%B0%9B%EC%95%84-%EC%B5%9C%EC%8B%A0-%EB%AA%A8%EB%8D%B8-%EC%8B%A4%ED%96%89%ED%95%98%EA%B8%B0">&#182;</a></h1><h2 id="1.-%EC%A4%80%EB%B9%84">1. &#51456;&#48708;<a class="anchor-link" href="#1.-%EC%A4%80%EB%B9%84">&#182;</a></h2><ol>
+<li><strong>64비트 Python 3.11</strong>을 설치합니다.</li>
+<li>이 저장소의 <strong>Code → Download ZIP</strong>으로 내려받고 압축을 풉니다. Git을 쓰면 clone해도 됩니다.</li>
+<li><strong><code>run_server.py</code>와 <code>requirements.txt</code>가 있는 폴더 안에서 터미널을 엽니다.</strong> 아래 명령은 모두 이 폴더 안에서 실행합니다. 새 터미널도 같은 폴더에서 여세요.</li>
+</ol>
+<p>업데이트된 작은 분류기 가중치는 이미 포함되어 있어 <strong>다시 학습할 필요가 없습니다.</strong> 대형 CF384 백본만 아래 명령으로 공식 출처에서 받습니다. 실제 API 키는 각 컴퓨터에서 생성됩니다.</p>
+<h2 id="2.-Mac">2. Mac<a class="anchor-link" href="#2.-Mac">&#182;</a></h2><h3 id="%EC%B2%98%EC%9D%8C-%ED%95%9C-%EB%B2%88:-%EC%84%A4%EC%B9%98-+-%EA%B0%80%EC%A4%91%EC%B9%98-%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C">&#52376;&#51020; &#54620; &#48264;: &#49444;&#52824; + &#44032;&#51473;&#52824; &#45796;&#50868;&#47196;&#46300;<a class="anchor-link" href="#%EC%B2%98%EC%9D%8C-%ED%95%9C-%EB%B2%88:-%EC%84%A4%EC%B9%98-+-%EA%B0%80%EC%A4%91%EC%B9%98-%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C">&#182;</a></h3><div class="highlight"><pre><span></span>python3.11<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+.venv/bin/python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+.venv/bin/python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+.venv/bin/python<span class="w"> </span>prepare_models.py<span class="w"> </span>--download
+</pre></div>
+<h3 id="%ED%84%B0%EB%AF%B8%EB%84%90-1:-%EC%84%9C%EB%B2%84-%EC%8B%A4%ED%96%89">&#53552;&#48120;&#45328; 1: &#49436;&#48260; &#49892;&#54665;<a class="anchor-link" href="#%ED%84%B0%EB%AF%B8%EB%84%90-1:-%EC%84%9C%EB%B2%84-%EC%8B%A4%ED%96%89">&#182;</a></h3><div class="highlight"><pre><span></span>.venv/bin/python<span class="w"> </span>run_server.py
+</pre></div>
+<p><code>Application startup complete</code>가 나오면 준비 완료입니다. 이 터미널은 켜 둡니다.</p>
+<h3 id="%EC%83%88-%ED%84%B0%EB%AF%B8%EB%84%90-2:-API-%ED%82%A4-%ED%99%95%EC%9D%B8">&#49352; &#53552;&#48120;&#45328; 2: API &#53412; &#54869;&#51064;<a class="anchor-link" href="#%EC%83%88-%ED%84%B0%EB%AF%B8%EB%84%90-2:-API-%ED%82%A4-%ED%99%95%EC%9D%B8">&#182;</a></h3><div class="highlight"><pre><span></span>.venv/bin/python<span class="w"> </span>client.py<span class="w"> </span>--show-key
+</pre></div>
+<h2 id="3.-Windows-PowerShell">3. Windows PowerShell<a class="anchor-link" href="#3.-Windows-PowerShell">&#182;</a></h2><h3 id="%EC%B2%98%EC%9D%8C-%ED%95%9C-%EB%B2%88:-%EC%84%A4%EC%B9%98-+-%EA%B0%80%EC%A4%91%EC%B9%98-%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C">&#52376;&#51020; &#54620; &#48264;: &#49444;&#52824; + &#44032;&#51473;&#52824; &#45796;&#50868;&#47196;&#46300;<a class="anchor-link" href="#%EC%B2%98%EC%9D%8C-%ED%95%9C-%EB%B2%88:-%EC%84%A4%EC%B9%98-+-%EA%B0%80%EC%A4%91%EC%B9%98-%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C">&#182;</a></h3><div class="highlight"><pre><span></span><span class="n">py</span> <span class="p">-</span><span class="n">3</span><span class="p">.</span><span class="n">11</span> <span class="n">-m</span> <span class="n">venv</span> <span class="p">.</span><span class="n">venv</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="p">-</span><span class="n">-upgrade</span> <span class="n">pip</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">torch</span><span class="p">==</span><span class="n">2</span><span class="p">.</span><span class="n">8</span><span class="p">.</span><span class="n">0</span> <span class="n">torchvision</span><span class="p">==</span><span class="n">0</span><span class="p">.</span><span class="n">23</span><span class="p">.</span><span class="n">0</span> <span class="p">-</span><span class="n">-index-url</span> <span class="n">https</span><span class="p">://</span><span class="n">download</span><span class="p">.</span><span class="n">pytorch</span><span class="p">.</span><span class="n">org</span><span class="p">/</span><span class="n">whl</span><span class="p">/</span><span class="n">cpu</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">-r</span> <span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">prepare_models</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-download</span>
+</pre></div>
+<h3 id="%ED%84%B0%EB%AF%B8%EB%84%90-1:-%EC%84%9C%EB%B2%84-%EC%8B%A4%ED%96%89">&#53552;&#48120;&#45328; 1: &#49436;&#48260; &#49892;&#54665;<a class="anchor-link" href="#%ED%84%B0%EB%AF%B8%EB%84%90-1:-%EC%84%9C%EB%B2%84-%EC%8B%A4%ED%96%89">&#182;</a></h3><div class="highlight"><pre><span></span><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">run_server</span><span class="p">.</span><span class="n">py</span>
+</pre></div>
+<p><code>Application startup complete</code>가 나오면 준비 완료입니다. 이 터미널은 켜 둡니다.</p>
+<h3 id="%EC%83%88-%ED%84%B0%EB%AF%B8%EB%84%90-2:-API-%ED%82%A4-%ED%99%95%EC%9D%B8">&#49352; &#53552;&#48120;&#45328; 2: API &#53412; &#54869;&#51064;<a class="anchor-link" href="#%EC%83%88-%ED%84%B0%EB%AF%B8%EB%84%90-2:-API-%ED%82%A4-%ED%99%95%EC%9D%B8">&#182;</a></h3><div class="highlight"><pre><span></span><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">client</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-show-key</span>
+</pre></div>
+<h2 id="4.-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80%EC%97%90%EC%84%9C-%EC%B5%9C%EC%8B%A0-%EC%A0%80%ED%95%B4%EC%83%81%EB%8F%84-%EB%AA%A8%EB%8D%B8-%EC%82%AC%EC%9A%A9">4. &#48652;&#46972;&#50864;&#51200;&#50640;&#49436; &#52572;&#49888; &#51200;&#54644;&#49345;&#46020; &#47784;&#45944; &#49324;&#50857;<a class="anchor-link" href="#4.-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80%EC%97%90%EC%84%9C-%EC%B5%9C%EC%8B%A0-%EC%A0%80%ED%95%B4%EC%83%81%EB%8F%84-%EB%AA%A8%EB%8D%B8-%EC%82%AC%EC%9A%A9">&#182;</a></h2><ol>
+<li>**<a href="http://127.0.0.1:8000/demo**">http://127.0.0.1:8000/demo**</a> 에 접속합니다.</li>
+<li>출력된 키 문자열만 <strong>API 키</strong> 칸에 붙여 넣습니다. <code>Bearer</code>나 <code>X-API-Key:</code>는 붙이지 않습니다.</li>
+<li>**대표 결과 → <code>L2-SP + 증강 + 160~300px 학습 (기본)</code>**이 자동 선택되어 있는지 확인합니다.</li>
+<li>사진을 선택하고 <strong>로컬 서버로 분석</strong>을 누릅니다.</li>
+</ol>
+<p><strong>API1.2.0부터 최신 <code>lowres</code> 모델이 기본입니다.</strong> 별도 선택 없이 사용하며 이전 모델과 비교할 때만 <code>adapted</code>를 선택합니다. 입력 크기에 따라 모델을 자동 전환하지는 않습니다.</p>
+<p>확장 프로그램/API로 연결할 때도 다음 주소를 사용합니다. 파일 전송과 키 설정은 <a href="docs/EXTENSION_API.md">API 설명서</a>를 참고하세요.</p>
+<div class="highlight"><pre><span></span><span class="err">POST /v1/predict</span>
+</pre></div>
+<h2 id="5.-%EB%8B%A4%EC%9D%8C-%EC%8B%A4%ED%96%89%EA%B3%BC-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8">5. &#45796;&#51020; &#49892;&#54665;&#44284; &#50629;&#45936;&#51060;&#53944;<a class="anchor-link" href="#5.-%EB%8B%A4%EC%9D%8C-%EC%8B%A4%ED%96%89%EA%B3%BC-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8">&#182;</a></h2><ul>
+<li>다음부터는 설치·다운로드 없이 위 <strong>서버 실행 명령</strong>만 사용합니다. 종료는 서버 터미널에서 <strong>Ctrl+C</strong>입니다.</li>
+<li>Git으로 받은 사람은 서버를 종료하고 같은 폴더에서 아래 명령을 실행한 뒤 서버를 다시 켭니다.</li>
+</ul>
+<div class="highlight"><pre><span></span>git<span class="w"> </span>pull<span class="w"> </span>--ff-only
+</pre></div>
+<ul>
+<li>ZIP으로 받은 사람은 최신 ZIP의 파일을 기존 폴더에 덮어쓰되 <strong><code>.venv</code>, <code>.runtime</code>, 다운로드한 백본 파일은 유지</strong>합니다.</li>
+<li>업데이트 후에는 <strong>서버 재시작 + 브라우저 새로고침</strong>이 필요합니다. 최신 모델이 기본 선택되어 있는지 확인하세요. 기존 확장이 <code>model=adapted</code>를 명시한다면 <code>lowres</code>로 바꾸거나 query를 생략해야 합니다.</li>
+<li><code>invalid_api_key</code>가 나오면 <strong>지금 실행 중인 서버 폴더</strong>에서 키 확인 명령을 다시 실행합니다.</li>
+</ul>
+<p>각 노트북에서 서버를 따로 실행하며 API 키도 각각 다릅니다. 서버가 꺼져 있으면 분석되지 않습니다. 결과는 모델의 추정이며 이미지 진위를 확정하지 않습니다.</p>
+<p>직접 검증한 환경은 macOS/CPU입니다. Windows 신규 설치는 이 컴퓨터에서 직접 검증하지 않았습니다.</p>
+</html>

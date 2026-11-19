@@ -20,6 +20,13 @@
     "sha256": "4d4b0afa8257172a42740a01fd81d353dc8e232d670bd43d4eede2a99be54886",
     "training_date": "2026-11-18",
     "method": "L2-SP + existing three training views + two160-300px downsampling views; equal4-fold mean",
-    "default_model_changed": false
+    "default_model_changed": true
+  },
+  "deployment": {
+    "api_version": "1.2.0",
+    "default_model": "lowres",
+    "date": "2026-11-19",
+    "threshold": 0.5,
+    "weights_changed_since_2026_11_18": false
   }
 }

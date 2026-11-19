@@ -89,7 +89,7 @@ def create_app(settings: Optional[Settings]=None,detector=None):
     async def model_info(request: Request):return request.app.state.detector.metadata()
 
     @app.post('/v1/predict',response_model=Prediction,dependencies=[Depends(authorized)],responses={400:{'description':'Empty/corrupt image or unexpected fields'},401:{'description':'Invalid API key'},403:{'description':'Disallowed browser origin'},413:{'description':'Body/image/pixel limit'},415:{'description':'Unsupported format or animation'},429:{'description':'Server busy; retry later'}},tags=['Prediction'])
-    async def predict(request: Request,file: UploadFile=File(...),model: Literal['original','adapted','lowres']='adapted'):
+    async def predict(request: Request,file: UploadFile=File(...),model: Literal['original','adapted','lowres']='lowres'):
         start=time.perf_counter();request_id=request.state.request_id
         try:
             form=await request.form()

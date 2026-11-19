@@ -1,8 +1,8 @@
 # 확장 프로그램 개발자용 API 계약
 
-API v1.1.0 / 2026-11-18. 서버 코드는 완성되어 있으며, Chrome 확장 자체는 이 패키지의 구현 범위가 아니다.
+API v1.2.0 / 2026-11-19. 서버 코드는 완성되어 있으며, Chrome 확장 자체는 이 패키지의 구현 범위가 아니다.
 
-저해상도추가: `model=lowres`로160~300px 축소 학습을 더한별도head를선택한다. 기존`adapted`기본값은유지한다. `scores.lowres`도항상반환하며, `selected_model`은`original/adapted/lowres`중하나다. 새모델파일을복사하고서버를재시작해야한다. 모델ID도변경되어확장캐시무효화가필요하다.
+저해상도추가: `model=lowres`로160~300px 축소 학습을 더한별도head를선택한다. 기본 대표 모델은 `lowres`로 변경했다. `model` 생략 시 최신 head를 사용한다. 명시적으로 `model=adapted`를 보내는 기존 확장은 이전 head를 계속 사용하므로 설정을 `lowres`로 바꿔야 한다. `scores.lowres`도항상반환하며, `selected_model`은`original/adapted/lowres`중하나다. 새모델파일을복사하고서버를재시작해야한다. 모델ID도변경되어확장캐시무효화가필요하다.
 
 ## 기본 설정
 
@@ -34,14 +34,14 @@ Chrome의 일반 웹페이지 LNA/loopback 정책과 확장 host_permissions는 
 ## 요청
 
 ```http
-POST /v1/predict?model=adapted
+POST /v1/predict?model=lowres
 X-API-Key: <api-key>
 Content-Type: multipart/form-data; boundary=<browser-generated>
 
 file: <image bytes>
 ```
 
-`file`은 정확히 한 개만 보낸다. JSON/base64/URL 필드는 받지 않는다. `model`은 query parameter로 `adapted`(기본), `original`, `lowres`. FormData 사용 시 **Content-Type을 직접 지정하지 않는다**. 브라우저가 올바른 boundary를 넣는다. 선택 결과와 별도로 세head의 점수를 반환한다.
+`file`은 정확히 한 개만 보낸다. JSON/base64/URL 필드는 받지 않는다. `model`은 query parameter로 `lowres`(기본), `original`, `adapted`. FormData 사용 시 **Content-Type을 직접 지정하지 않는다**. 브라우저가 올바른 boundary를 넣는다. 선택 결과와 별도로 세head의 점수를 반환한다.
 
 입력 제한:10MiB/40MP. JPEG, PNG, WEBP, TIFF, BMP의 단일 정지 이미지만 지원한다. 투명 이미지는 RGB로 변환되며 웹페이지의 CSS 배경/필터까지 합성하는 API가 아니다. 작은 썸네일·스크린샷·애니메이션 프레임은 원본과 다른 데이터다. 가능한 한 원본 bytes를 보내고, 서버 전처리를 중복 적용하지 않는다. SVG/애니메이션/비디오 등은 우선 건너뛰는 정책을 권장한다.
 
@@ -51,7 +51,7 @@ file: <image bytes>
 async function detectImage(blob, apiKey, baseUrl = 'http://127.0.0.1:8000') {
   const data = new FormData();
   data.append('file', blob, 'image');
-  const response = await fetch(`${baseUrl}/v1/predict?model=adapted`, {
+  const response = await fetch(`${baseUrl}/v1/predict?model=lowres`, {
     method: 'POST',
     headers: { 'X-API-Key': apiKey },
     body: data,

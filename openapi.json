@@ -1,1 +1,379 @@
-{"openapi":"3.1.0","info":{"title":"CF384 Local Image Detection API","description":"Local still-image inference. Scores are estimates, not image authenticity verification. X-API-Key required for /v1/*.","version":"1.1.0"},"paths":{"/health":{"get":{"tags":["Status"],"summary":"Health","operationId":"health_health_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}}}},"/v1/model":{"get":{"tags":["Model"],"summary":"Model Info","operationId":"model_info_v1_model_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}},"security":[{"APIKeyHeader":[]}]}},"/v1/predict":{"post":{"tags":["Prediction"],"summary":"Predict","operationId":"predict_v1_predict_post","security":[{"APIKeyHeader":[]}],"parameters":[{"name":"model","in":"query","required":false,"schema":{"enum":["original","adapted","lowres"],"type":"string","default":"adapted","title":"Model"}}],"requestBody":{"required":true,"content":{"multipart/form-data":{"schema":{"$ref":"#/components/schemas/Body_predict_v1_predict_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Prediction"}}}},"400":{"description":"Empty/corrupt image or unexpected fields"},"401":{"description":"Invalid API key"},"403":{"description":"Disallowed browser origin"},"413":{"description":"Body/image/pixel limit"},"415":{"description":"Unsupported format or animation"},"429":{"description":"Server busy; retry later"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}}},"components":{"schemas":{"Body_predict_v1_predict_post":{"properties":{"file":{"type":"string","format":"binary","title":"File"}},"type":"object","required":["file"],"title":"Body_predict_v1_predict_post"},"HTTPValidationError":{"properties":{"detail":{"items":{"$ref":"#/components/schemas/ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"},"ImageInfo":{"properties":{"width":{"type":"integer","title":"Width"},"height":{"type":"integer","title":"Height"},"format":{"type":"string","title":"Format"},"sha256":{"type":"string","title":"Sha256"},"bytes":{"type":"integer","title":"Bytes"}},"type":"object","required":["width","height","format","sha256","bytes"],"title":"ImageInfo"},"Prediction":{"properties":{"api_version":{"type":"string","title":"Api Version"},"request_id":{"type":"string","title":"Request Id"},"model_id":{"type":"string","title":"Model Id"},"selected_model":{"type":"string","enum":["original","adapted","lowres"],"title":"Selected Model"},"result":{"$ref":"#/components/schemas/Score"},"scores":{"additionalProperties":{"$ref":"#/components/schemas/Score"},"type":"object","title":"Scores"},"threshold":{"type":"number","title":"Threshold"},"score_kind":{"type":"string","title":"Score Kind"},"cached":{"type":"boolean","title":"Cached"},"image":{"$ref":"#/components/schemas/ImageInfo"},"timing":{"$ref":"#/components/schemas/Timings"},"notice":{"type":"string","title":"Notice"}},"type":"object","required":["api_version","request_id","model_id","selected_model","result","scores","threshold","score_kind","cached","image","timing","notice"],"title":"Prediction"},"Score":{"properties":{"score_ai":{"type":"number","maximum":1.0,"minimum":0.0,"title":"Score Ai"},"prediction":{"type":"integer","enum":[0,1],"title":"Prediction"},"label":{"type":"string","enum":["real","ai_generated"],"title":"Label"}},"type":"object","required":["score_ai","prediction","label"],"title":"Score"},"Timings":{"properties":{"queue_ms":{"type":"number","title":"Queue Ms"},"preprocess_ms":{"type":"number","title":"Preprocess Ms"},"inference_ms":{"type":"number","title":"Inference Ms"},"total_ms":{"type":"number","title":"Total Ms"}},"type":"object","required":["queue_ms","preprocess_ms","inference_ms","total_ms"],"title":"Timings"},"ValidationError":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"},"input":{"title":"Input"},"ctx":{"type":"object","title":"Context"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"}},"securitySchemes":{"APIKeyHeader":{"type":"apiKey","in":"header","name":"X-API-Key"}}}}
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CF384 Local Image Detection API",
+    "description": "Local still-image inference. Scores are estimates, not image authenticity verification. X-API-Key required for /v1/*.",
+    "version": "1.2.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Status"
+        ],
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/model": {
+      "get": {
+        "tags": [
+          "Model"
+        ],
+        "summary": "Model Info",
+        "operationId": "model_info_v1_model_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/v1/predict": {
+      "post": {
+        "tags": [
+          "Prediction"
+        ],
+        "summary": "Predict",
+        "operationId": "predict_v1_predict_post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "original",
+                "adapted",
+                "lowres"
+              ],
+              "type": "string",
+              "default": "lowres",
+              "title": "Model"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_predict_v1_predict_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prediction"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Empty/corrupt image or unexpected fields"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "403": {
+            "description": "Disallowed browser origin"
+          },
+          "413": {
+            "description": "Body/image/pixel limit"
+          },
+          "415": {
+            "description": "Unsupported format or animation"
+          },
+          "429": {
+            "description": "Server busy; retry later"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body_predict_v1_predict_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_predict_v1_predict_post"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ImageInfo": {
+        "properties": {
+          "width": {
+            "type": "integer",
+            "title": "Width"
+          },
+          "height": {
+            "type": "integer",
+            "title": "Height"
+          },
+          "format": {
+            "type": "string",
+            "title": "Format"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256"
+          },
+          "bytes": {
+            "type": "integer",
+            "title": "Bytes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "width",
+          "height",
+          "format",
+          "sha256",
+          "bytes"
+        ],
+        "title": "ImageInfo"
+      },
+      "Prediction": {
+        "properties": {
+          "api_version": {
+            "type": "string",
+            "title": "Api Version"
+          },
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "model_id": {
+            "type": "string",
+            "title": "Model Id"
+          },
+          "selected_model": {
+            "type": "string",
+            "enum": [
+              "original",
+              "adapted",
+              "lowres"
+            ],
+            "title": "Selected Model"
+          },
+          "result": {
+            "$ref": "#/components/schemas/Score"
+          },
+          "scores": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Score"
+            },
+            "type": "object",
+            "title": "Scores"
+          },
+          "threshold": {
+            "type": "number",
+            "title": "Threshold"
+          },
+          "score_kind": {
+            "type": "string",
+            "title": "Score Kind"
+          },
+          "cached": {
+            "type": "boolean",
+            "title": "Cached"
+          },
+          "image": {
+            "$ref": "#/components/schemas/ImageInfo"
+          },
+          "timing": {
+            "$ref": "#/components/schemas/Timings"
+          },
+          "notice": {
+            "type": "string",
+            "title": "Notice"
+          }
+        },
+        "type": "object",
+        "required": [
+          "api_version",
+          "request_id",
+          "model_id",
+          "selected_model",
+          "result",
+          "scores",
+          "threshold",
+          "score_kind",
+          "cached",
+          "image",
+          "timing",
+          "notice"
+        ],
+        "title": "Prediction"
+      },
+      "Score": {
+        "properties": {
+          "score_ai": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score Ai"
+          },
+          "prediction": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ],
+            "title": "Prediction"
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "real",
+              "ai_generated"
+            ],
+            "title": "Label"
+          }
+        },
+        "type": "object",
+        "required": [
+          "score_ai",
+          "prediction",
+          "label"
+        ],
+        "title": "Score"
+      },
+      "Timings": {
+        "properties": {
+          "queue_ms": {
+            "type": "number",
+            "title": "Queue Ms"
+          },
+          "preprocess_ms": {
+            "type": "number",
+            "title": "Preprocess Ms"
+          },
+          "inference_ms": {
+            "type": "number",
+            "title": "Inference Ms"
+          },
+          "total_ms": {
+            "type": "number",
+            "title": "Total Ms"
+          }
+        },
+        "type": "object",
+        "required": [
+          "queue_ms",
+          "preprocess_ms",
+          "inference_ms",
+          "total_ms"
+        ],
+        "title": "Timings"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}

@@ -19,7 +19,7 @@ BASE_SHA256='b89f36275f3bf5e2b040eee36597a8f19db051bff9a473a9cf7b2466284fb387'
 HEAD_SHA256='c7595c7b504e1195effe31600e8bebe3527812d9c5a93560bc71d9e5e2b42adb'
 LOWRES_HEAD_SHA256='4d4b0afa8257172a42740a01fd81d353dc8e232d670bd43d4eede2a99be54886'
 FORMATS=('JPEG','PNG','WEBP','TIFF','BMP')
-MODEL_ID='cf384-l2sp-aug-lowres-mean4-20261118'
+MODEL_ID='cf384-l2sp-aug-lowres-default-20261119'
 NOTICE='Research model score, not a calibrated probability or proof of image authenticity.'
 
 class ImageError(Exception):
@@ -58,7 +58,7 @@ class Detector:
         self.transform=T.Compose([T.Resize(440),T.CenterCrop(384),T.ToTensor(),T.Normalize([.485,.456,.406],[.229,.224,.225])])
 
     def metadata(self):
-        return dict(model_id=MODEL_ID,architecture='ViT-S/16',feature_dim=384,adaptation='L2-SP + fixed postprocessing augmentation; arithmetic mean of 4 fold heads',lowres_adaptation='Additional two160-300px downsampling training views; same frozen backbone; separate 4-fold mean head',device=self.device,weights_frozen=True,threshold=.5,score_kind='uncalibrated_model_score',available_models=['original','adapted','lowres'],base_sha256=BASE_SHA256,head_sha256=HEAD_SHA256,lowres_head_sha256=LOWRES_HEAD_SHA256,
+        return dict(model_id=MODEL_ID,default_model='lowres',architecture='ViT-S/16',feature_dim=384,adaptation='L2-SP + fixed postprocessing augmentation; arithmetic mean of 4 fold heads',lowres_adaptation='Additional two160-300px downsampling training views; same frozen backbone; separate 4-fold mean head',device=self.device,weights_frozen=True,threshold=.5,score_kind='uncalibrated_model_score',available_models=['original','adapted','lowres'],base_sha256=BASE_SHA256,head_sha256=HEAD_SHA256,lowres_head_sha256=LOWRES_HEAD_SHA256,
           preprocessing=['EXIF orientation','RGB','whole image bilinear warp to 512x512','JPEG95, subsampling=2','Resize short side 440 bilinear','CenterCrop384','ImageNet normalization'],notice=NOTICE)
 
     def decode(self,raw):

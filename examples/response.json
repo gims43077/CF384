@@ -1,7 +1,7 @@
 {
-  "api_version": "1.1.0",
+  "api_version": "1.2.0",
   "request_id": "cbe86009-533f-483b-95f4-55534f07a3a6",
-  "model_id": "cf384-l2sp-aug-lowres-mean4-20261118",
+  "model_id": "cf384-l2sp-aug-lowres-default-20261119",
   "selected_model": "lowres",
   "result": {
     "score_ai": 0.18763892352581024,

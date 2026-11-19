@@ -1,0 +1,60 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:16px/1.7 system-ui,sans-serif;max-width:1050px;margin:36px auto;padding:15px}table{border-collapse:collapse}td,th{padding:7px;border:1px solid #ddd}pre{background:#f4f6f8;padding:15px;overflow:auto}a{color:#087e8b}</style><h1 id="CF384-%EC%9E%91%EC%97%85-%EC%9A%94%EC%95%BD-%E2%80%94-2026-11-19">CF384 &#51089;&#50629; &#50836;&#50557; &#8212; 2026-11-19<a class="anchor-link" href="#CF384-%EC%9E%91%EC%97%85-%EC%9A%94%EC%95%BD-%E2%80%94-2026-11-19">&#182;</a></h1><p>현재 모델은 <strong>동결 CF384(ViT-S/16) + L2-SP + 기존 증강 + 160~300px 축소 증강으로 학습한 선형 head</strong>입니다. API1.2.0부터 이 <code>lowres</code> head가 기본 결과입니다.</p>
+<h2 id="%EA%B1%B0%EC%B3%90-%EC%98%A8-%EC%9E%91%EC%97%85">&#44144;&#52432; &#50728; &#51089;&#50629;<a class="anchor-link" href="#%EA%B1%B0%EC%B3%90-%EC%98%A8-%EC%9E%91%EC%97%85">&#182;</a></h2><ol>
+<li><strong>원본 조사·평가:</strong> CF384 공개 가중치와 전처리를 확인하고 실제/생성 이미지의 점수를 비교했습니다.</li>
+<li><strong>분류기 개선:</strong> 백본을 동결하고 마지막 선형 분류기385개 파라미터만 학습했습니다. 일반 L2, L2-SP, 증강, WiSE-FT 등의 후보를 비교한 뒤 L2-SP+증강을 개선 head로 구성했습니다. L2-SP는 원본 head에서 지나치게 멀어지는 학습을 억제합니다.</li>
+<li><strong>저해상도 학습 통합:</strong> 기존 원본+증강2개에160~300px 축소 증강2개를 더해 함께 학습했습니다. fold당 원본280장의 입력이840→1400 view가 됐으며, 독립 사진이 늘어난 것은 아닙니다. 검증 데이터로 학습 설정을 선택하고4개 fold head를 동일 가중치 평균했습니다.</li>
+<li><strong>오탐/임계값 점검:</strong> 임계값을 높이면 실사 오탐은 줄지만 생성 이미지 누락이 늘어남을 확인했습니다. 높은 임계값을 배포하지 않고0.5를 유지했습니다.</li>
+<li><strong>실제 웹 썸네일 평가:</strong> 모델을 더 복잡하게 만들기 전에 Wikimedia CDN의 새 이미지64장으로 동결 평가했습니다. 점수를 보기 전에 표본을 고정했고 테스트로 임계값을 최적화하지 않았습니다.</li>
+<li><strong>로컬 Python API:</strong> FastAPI, X-API-Key 인증, 이미지 업로드, 브라우저 데모, Python/확장 연동 예제를 만들었습니다. 이미지당 백본1회로 세 head 점수를 계산하며 서버는 학습하지 않습니다.</li>
+<li><strong>이번 배포:</strong> 최신 <code>lowres</code> head를 API·Python·JS·데모의 기본값으로 통일했습니다. 새 학습이나 가중치 변경은 없습니다. 원본/이전 head는 비교용으로 남겼습니다.</li>
+</ol>
+<h2 id="%EC%83%88-%EC%9B%B9-%EC%8D%B8%EB%84%A4%EC%9D%BC%EC%97%90%EC%84%9C-%EC%A7%81%EC%A0%91-%EC%B8%A1%EC%A0%95%ED%95%9C-%EA%B2%B0%EA%B3%BC">&#49352; &#50937; &#50040;&#45348;&#51068;&#50640;&#49436; &#51649;&#51217; &#52769;&#51221;&#54620; &#44208;&#44284;<a class="anchor-link" href="#%EC%83%88-%EC%9B%B9-%EC%8D%B8%EB%84%A4%EC%9D%BC%EC%97%90%EC%84%9C-%EC%A7%81%EC%A0%91-%EC%B8%A1%EC%A0%95%ED%95%9C-%EA%B2%B0%EA%B3%BC">&#182;</a></h2><p>실사32장·AI32장(SD계열20/DALL-E계열12), 실제 긴 변160~280px(중앙값250px), 임계값0.5입니다. <strong>Google 서버 썸네일은 아닙니다.</strong></p>
+<table>
+<thead>
+<tr>
+  <th>모델</th>
+  <th style="text-align:right">정확도</th>
+  <th style="text-align:right">실사 오탐</th>
+  <th style="text-align:right">AI 누락</th>
+  <th style="text-align:right">ROC-AUC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>원본 CF384</td>
+  <td style="text-align:right">81.25%</td>
+  <td style="text-align:right">0/32</td>
+  <td style="text-align:right">12/32</td>
+  <td style="text-align:right">0.9775</td>
+</tr>
+<tr>
+  <td>기존 L2-SP+증강</td>
+  <td style="text-align:right">85.94%</td>
+  <td style="text-align:right">0/32</td>
+  <td style="text-align:right">9/32</td>
+  <td style="text-align:right">0.9639</td>
+</tr>
+<tr>
+  <td>최신 L2-SP+증강+축소 학습</td>
+  <td style="text-align:right">90.63%</td>
+  <td style="text-align:right">2/32</td>
+  <td style="text-align:right">4/32</td>
+  <td style="text-align:right">0.9697</td>
+</tr>
+</tbody>
+</table>
+<p>기존 head 대비 오류5개를 고쳤지만 실사 오탐2개가 새로 생겼습니다. 개선 폭+4.69%p의 paired bootstrap95% 구간은−3.13~+12.50%p로, 확정적인 개선 증거로 보기는 어렵습니다. 원본 AUC가 최신 head보다 높으므로 모든 분리 성능이 개선된 것도 아닙니다.</p>
+<p><strong>같은 작은 썸네일에 JPEG85 압축을 추가</strong>하면 기존 head67.19%, 최신 head81.25%였습니다. 최신 head도 압축에 민감합니다. 실제 웹 파일 그대로인 결과와 이 대조군은 구분해야 합니다.</p>
+<p>표본/제작자/생성기가 제한되고, 실사 전부JPEG와 AI의JPEG14/PNG15/WebP3이라는 형식 차이도 있습니다. 라벨은 Commons 카테고리·설명·카메라 메타데이터에 근거하며 완전한 진위 증명은 아닙니다. 기존 로컬 학습/평가866장과 보수적 중복 검사에서 일치0건이었지만 CF384 사전학습 미노출을 보장하지 못합니다. 큰 파일12장은HTTP429로 받지 못해 큰 미리보기 비교는 동일52장에만 제한했습니다. 작은/중간 썸네일64장은 모두 평가했습니다.</p>
+<h2 id="%ED%98%84%EC%9E%AC-API%EC%97%90-%EC%8B%A4%EC%A0%9C-%ED%8F%AC%ED%95%A8%EB%90%9C-%EA%B8%B0%EC%88%A0">&#54788;&#51116; API&#50640; &#49892;&#51228; &#54252;&#54632;&#46108; &#44592;&#49696;<a class="anchor-link" href="#%ED%98%84%EC%9E%AC-API%EC%97%90-%EC%8B%A4%EC%A0%9C-%ED%8F%AC%ED%95%A8%EB%90%9C-%EA%B8%B0%EC%88%A0">&#182;</a></h2><ul>
+<li>동결 CF384 특징 + 선형 head, L2-SP, 좌우반전·리사이즈·블러·JPEG 및 추가160~300px 축소 학습,4개 fold head의 산술 평균입니다. fold head 평균은 백본4회 추론이 아닙니다.</li>
+<li><strong>TTA·LoRA·GAPL·주파수 결합·WiSE-FT는 현재 배포 추론 경로에 포함되지 않습니다.</strong> 과거 검토/실험과 현재 배포 구성을 구분합니다.</li>
+<li>점수는 보정된 진위 확률이 아닙니다. 기본 모델 변경이 오탐 문제를 해결했다는 뜻은 아닙니다.</li>
+</ul>
+<h2 id="%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%ED%95%98%EA%B3%A0-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0">&#50629;&#45936;&#51060;&#53944;&#54616;&#44256; &#49324;&#50857;&#54616;&#44592;<a class="anchor-link" href="#%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%ED%95%98%EA%B3%A0-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0">&#182;</a></h2><p>저장소 폴더 안에서 서버를Ctrl+C로 종료한 뒤 실행합니다.</p>
+<div class="highlight"><pre><span></span>git<span class="w"> </span>pull<span class="w"> </span>--ff-only
+.venv/bin/python<span class="w"> </span>run_server.py
+</pre></div>
+<p>Windows 서버 실행: <code>.\.venv\Scripts\python.exe run_server.py</code>. 브라우저를 새로고침하세요. API키는 기존 설치의 것을 그대로 사용합니다. 확장이 <code>model=adapted</code>를 명시한다면 <code>model=lowres</code>로 바꾸거나 query를 생략해야 최신 기본 모델을 사용합니다. 응답의 <code>selected_model</code>이 <code>lowres</code>, <code>api_version</code>이 <code>1.2.0</code>인지 확인하세요. 설치 명령은 <a href="../QUICK_START_KO.md">간단 사용법</a>에 있습니다.</p>
+<p>공개 저장소에는 키·사진·개인 경로·가상환경·평가 원본 데이터를 올리지 않습니다. <a href="evaluation/web_thumbnail_metrics.csv">전체 지표</a>, <a href="evaluation/jpeg85_control_metrics.csv">JPEG85 대조군</a>, <a href="evaluation/web_thumbnail_per_family.csv">생성기별 지표</a>, <a href="evaluation/bootstrap_ci.csv">불확실성 구간</a>을 첨부했습니다. 논문 보고 성능이 아닌 이번 로컬 직접 측정 결과입니다.</p>
+</html>
