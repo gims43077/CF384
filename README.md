@@ -1,6 +1,6 @@
 # CF384 Local Image Detection API
 
-**Chrome 확장 연결:** 사용자는 Python 서버를 켜고 확장 설정에 `http://127.0.0.1:8000`과 로컬 API 키를 입력합니다. SerpApi 키는 서버에만 보관합니다. [사용자 연결 순서](QUICK_START_KO.md) · [확장 개발자 연결 예제](docs/EXTENSION_API.md). 완성된 확장은 별도 구현해야 합니다.
+**로컬 FastAPI 데모 실행:** 설치 → SerpApi 무료 검색 키 저장 → 서버 실행 → 로컬 API 키 확인 → 브라우저에서 사진 업로드 순서입니다. 확장 프로그램 없이 CF384 판별과 Google Lens 사용처 검색을 함께 시연합니다. **[터미널 명령어와 실행 순서](QUICK_START_KO.md)**.
 
 **2026-11-23 / API1.4.0:** 인터넷 사용처 검색을 **SerpApi Google Lens 무료 요금제 전용**으로 교체했습니다. 무료 요금제와 잔여 한도를 확인하지 못하면 검색을 차단하며 TinEye/유료 fallback은 사용하지 않습니다. CF384 가중치와 임계값은 그대로입니다. [무료 검색 설정](docs/WEB_USAGE_SEARCH_KO.md). 실제 계정 키가 없어 검색 품질 평가는 아직 미실행입니다.
 
@@ -8,7 +8,9 @@ CF384 기반의 로컬 정지 이미지 탐지 API입니다. 원본 분류기, L
 
 **이 저장소에는 실제 API 키, 가상환경, 사용자 사진, 평가 원본 데이터, 실행 로그, 대형 백본 가중치를 포함하지 않습니다.** 작은 학습 head 두 개는 `models/`에 포함합니다. 공식 CF384 백본은 아래 명령으로 다운로드합니다. 인증 기능과 `X-API-Key` 헤더 이름은 코드에 유지합니다.
 
-## 실행
+## 로컬 통합 데모 실행
+
+아래 설치 명령의 `configure_web_search.py`에는 SerpApi Free 계정의 API 키를 숨김 입력합니다. 서버 시작 후에는 별도로 확인한 CF384 로컬 API 키를 데모에 입력합니다. 키 구분과 단계별 화면 사용법은 [간단 사용법](QUICK_START_KO.md)을 따르세요.
 
 모든 명령은 저장소 폴더 안에서 실행합니다. 64비트 Python3.11을 권장합니다. GPU는 필수가 아닙니다.
 
@@ -19,7 +21,8 @@ python3.11 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python prepare_models.py --download
-.venv/bin/python run_server.py
+.venv/bin/python configure_web_search.py
+.venv/bin/python run_server.py --enable-web-search
 ```
 
 서버 터미널은 켜 두고, 새 터미널을 같은 폴더에서 엽니다.
@@ -38,7 +41,8 @@ py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install torch==2.8.0 torchvision==0.23.0 --index-url https://download.pytorch.org/whl/cpu
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe prepare_models.py --download
-.\.venv\Scripts\python.exe run_server.py
+.\.venv\Scripts\python.exe configure_web_search.py
+.\.venv\Scripts\python.exe run_server.py --enable-web-search
 ```
 
 새 터미널에서:
