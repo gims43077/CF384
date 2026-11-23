@@ -94,4 +94,4 @@ git pull --ff-only
 
 ## 인터넷에서 같은 이미지의 사용처 찾기 (선택)
 
-기존 AI 판별은 그대로 사용할 수 있습니다. 인터넷 검색까지 필요하면 [인터넷 사용처 검색 설정](docs/WEB_USAGE_SEARCH_KO.md)을 따라 기존 TinEye API 키를 설정하고 `run_server.py --enable-web-search`로 실행한 뒤 데모에서 검색 옵션을 선택하세요. 유료 API 크레딧이 필요하며 미설정 상태에서는 실제 검색하지 않습니다. 제공자의 검색 색인 범위에서만 찾습니다.
+기존 AI 판별은 그대로 사용할 수 있습니다. 인터넷 검색까지 필요하면 [인터넷 사용처 검색 설정](docs/WEB_USAGE_SEARCH_KO.md)을 따라 SerpApi Free 요금제 API 키를 설정하고 `run_server.py --enable-web-search`로 실행한 뒤 데모에서 검색 옵션을 선택하세요. 무료 요금제 잔여 한도 안에서 사용하며 미설정/유료 요금제에서는 실제 검색하지 않습니다. 제공자의 검색 색인 범위에서만 찾습니다.

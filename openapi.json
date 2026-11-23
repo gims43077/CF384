@@ -3,7 +3,7 @@
   "info": {
     "title": "CF384 Local Image Detection API",
     "description": "Local still-image inference. Scores are estimates, not image authenticity verification. X-API-Key required for /v1/*.",
-    "version": "1.3.0"
+    "version": "1.4.0"
   },
   "paths": {
     "/health": {
@@ -475,6 +475,33 @@
             ],
             "title": "Provider Score"
           },
+          "match_kind": {
+            "type": "string",
+            "title": "Match Kind",
+            "default": "provider_exact_match"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "thumbnail_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Thumbnail Url"
+          },
           "backlinks": {
             "items": {
               "$ref": "#/components/schemas/WebBacklink"
@@ -500,7 +527,8 @@
               "matches_found",
               "no_matches",
               "error",
-              "rate_limited"
+              "rate_limited",
+              "blocked"
             ],
             "title": "Status"
           },

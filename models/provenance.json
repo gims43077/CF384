@@ -23,14 +23,16 @@
     "default_model_changed": true
   },
   "deployment": {
-    "api_version": "1.3.0",
+    "api_version": "1.4.0",
     "default_model": "lowres",
     "date": "2026-11-23",
     "threshold": 0.5,
     "weights_changed_since_2026_11_18": false
   },
   "web_search": {
-    "provider": "TinEye API",
+    "provider": "SerpApi Google Lens",
+    "quota_policy": "free_plan_only",
+    "paid_fallback": false,
     "enabled_by_default": false,
     "model_weights_changed": false,
     "live_provider_verified": false

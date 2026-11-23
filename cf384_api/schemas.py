@@ -10,10 +10,13 @@ class WebMatch(BaseModel):
     image_url: Optional[str]=None
     domain: Optional[str]=None
     provider_score: Optional[float]=None
+    match_kind: str="provider_exact_match"
+    title: Optional[str]=None
+    thumbnail_url: Optional[str]=None
     backlinks: list[WebBacklink]
 
 class WebUsage(BaseModel):
-    status: Literal['not_requested','disabled','not_configured','matches_found','no_matches','error','rate_limited']
+    status: Literal['not_requested','disabled','not_configured','matches_found','no_matches','error','rate_limited','blocked']
     provider: str
     searched_at: Optional[str]=None
     cached: bool=False

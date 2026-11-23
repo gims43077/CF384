@@ -20,17 +20,17 @@ def image(color=30):
     stream=io.BytesIO();Image.new('RGB',(180,120),(color,100,170)).save(stream,format='PNG');return stream.getvalue()
 
 def result(matches=True):
-    return {'code':200,'results':{'matches':[{'image_url':'https://images.example.org/copy.jpg','domain':'example.org','score':96.5,'backlinks':[{'backlink':'https://example.org/article','url':'https://images.example.org/copy.jpg','crawl_date':'2026-01-01'},{'backlink':'javascript:alert(1)','url':'file:///etc/passwd'}]}] if matches else []}}
+    return {'search_metadata':{'status':'Success'},'exact_matches':[{'image':'https://images.example.org/copy.jpg','title':'Fixture usage','link':'https://example.org/article','thumbnail':'https://images.example.org/thumb.jpg'},{'link':'javascript:alert(1)'}] if matches else []}
 
 def settings(**kw):
-    return Settings(api_key=secrets.token_urlsafe(32),web_search_enabled=kw.pop('web_search_enabled',True),tineye_api_key=kw.pop('tineye_api_key','fixture-only-provider-key'),**kw)
+    return Settings(api_key=secrets.token_urlsafe(32),web_search_enabled=kw.pop('web_search_enabled',True),serpapi_api_key=kw.pop('serpapi_api_key','fixture-only-provider-key'),**kw)
 
 def run(coro):return asyncio.run(coro)
 
 @pytest.mark.parametrize('enabled,key,requested,expected',[(True,'fixture',False,'not_requested'),(False,'fixture',True,'disabled'),(True,'',True,'not_configured')])
 def test_no_network_without_all_three_optins(enabled,key,requested,expected):
     def forbidden(*a):raise AssertionError('Unexpected provider call')
-    service=WebSearch(settings(web_search_enabled=enabled,tineye_api_key=key),transport=forbidden)
+    service=WebSearch(settings(web_search_enabled=enabled,serpapi_api_key=key),transport=forbidden)
     assert run(service.search(image(),requested))['status']==expected
     assert service.calls==0
 
@@ -98,20 +98,64 @@ def test_expired_cache_calls_provider_again(monkeypatch):
     run(scenario())
 
 def test_provider_request_wire_protocol_without_network(monkeypatch):
+    from urllib.parse import urlsplit,parse_qs
+    seen=[]
     class Response:
+        def __init__(self,obj):self.obj=obj
         def __enter__(self):return self
         def __exit__(self,*a):pass
-        def read(self,limit):return json.dumps(result()).encode()
+        def read(self,limit):return json.dumps(self.obj).encode()
     class Opener:
         def open(self,req,timeout):
-            assert req.full_url=='https://api.tineye.com/rest/search/'
-            assert req.get_header('X-api-key')=='fixture-key'
-            assert b'name="image_upload"' in req.data and b'fixture-image-bytes' in req.data
-            assert b'name="limit"\r\n\r\n10' in req.data
-            assert timeout==20
-            return Response()
+            p=urlsplit(req.full_url);seen.append(p.path);assert p.scheme=='https' and p.hostname=='serpapi.com'
+            if p.path=='/account.json':
+                assert parse_qs(p.query)['api_key']==['fixture-key']
+                return Response(free_account())
+            if p.path=='/image':
+                assert b'name="image"' in req.data and b'fixture-image-bytes' in req.data
+                assert b'name="api_key"' in req.data
+                return Response({'image_id':'fixture-image-id'})
+            assert p.path=='/search'
+            q=parse_qs(p.query);assert q['type']==['exact_matches'] and q['engine']==['google_lens'] and q['image_id']==['fixture-image-id']
+            return Response(result())
     monkeypatch.setattr(module.urllib.request,'build_opener',lambda *a:Opener())
-    assert module.upload_tineye(b'fixture-image-bytes','fixture-key',20)['code']==200
+    assert module.upload_serpapi(b'fixture-image-bytes','fixture-key',20)['search_metadata']['status']=='Success'
+    assert seen==['/account.json','/image','/search']
+
+
+def free_account():
+    return dict(plan_id='free',plan_name='Free Plan',plan_monthly_price=0,plan_searches_left=200,extra_credits=0,this_hour_searches=0,account_rate_limit_per_hour=50)
+
+
+@pytest.mark.parametrize('change,code',[
+    ({'plan_id':'developer','plan_name':'Developer','plan_monthly_price':25},'free_plan_required'),
+    ({'plan_searches_left':0},'free_quota_exhausted'),
+    ({'extra_credits':100},'free_plan_required'),
+    ({'plan_monthly_price':None},'free_account_check_failed'),
+    ({'this_hour_searches':50},'free_hourly_quota_exhausted')])
+def test_nonfree_or_exhausted_accounts_never_upload_or_search(monkeypatch,change,code):
+    account=free_account();account.update(change);seen=[]
+    def call(url,*a,**kw):
+        seen.append(url);assert '/account.json?' in url;return account
+    monkeypatch.setattr(module,'request_json',call)
+    with pytest.raises(ProviderError) as err:module.upload_serpapi(image(),'fixture-key',20)
+    assert err.value.code==code and len(seen)==1
+
+
+def test_similar_only_results_are_not_reported_as_reuse():
+    with pytest.raises(ProviderError) as err:normalize({'search_metadata':{'status':'Success'},'visual_matches':[{'link':'https://example.org'}]})
+    assert err.value.code=='unexpected_search_type'
+
+
+def test_noise_image_fits_upload_limit():
+    import numpy as np
+    im=Image.fromarray(np.random.default_rng(12).integers(0,256,(1800,1800,3),dtype=np.uint8));stream=io.BytesIO();im.save(stream,format='PNG')
+    assert len(search_image(stream.getvalue()))<=480000
+
+
+def test_free_plan_block_keeps_explicit_status():
+    def reject(*a):raise ProviderError('free_plan_required')
+    r=run(WebSearch(settings(),transport=reject).search(image(),True));assert r['status']=='blocked' and r['error_code']=='free_plan_required'
 
 @pytest.mark.parametrize('obj',[{}, {'results':{}}, {'results':{'matches':'bad'}}])
 def test_malformed_provider_response(obj):
@@ -147,10 +191,24 @@ def test_api_combines_real_cf_scores_with_mock_web_usage():
         assert c.status_code==200 and c.json()['web_usage']['status']=='error'
         assert c.json()['result']==c.json()['scores']['lowres']
         status=client.get('/v1/web-search/status',headers=headers).json()
-        assert status['provider_calls_this_session']==2 and cfg.tineye_api_key not in json.dumps(status)
+        assert status['provider_calls_this_session']==2 and cfg.serpapi_api_key not in json.dumps(status)
 
 def test_provider_key_file_permissions(tmp_path):
     from configure_web_search import store_key
     p=tmp_path/'key.txt';store_key('fixture-only-key',p)
     assert p.read_text().strip()=='fixture-only-key'
     if sys.platform!='win32':assert p.stat().st_mode & 0o777==0o600
+
+def test_api_paid_account_is_blocked_before_upload(monkeypatch):
+    if not (ROOT/'models/cf384.safetensors').exists():pytest.skip('Download official backbone first')
+    seen=[]
+    def account_only(url,*a,**kw):
+        seen.append(url);assert '/account.json?' in url
+        return dict(plan_id='developer',plan_name='Developer',plan_monthly_price=25,plan_searches_left=100,extra_credits=0)
+    monkeypatch.setattr(module,'request_json',account_only)
+    cfg=settings(allowed_hosts=('testserver',))
+    with TestClient(create_app(cfg,Detector(cfg))) as client:
+        r=client.post('/v1/predict?web_search=true',headers={'X-API-Key':cfg.api_key},files={'file':('fixture.png',image(),'image/png')})
+        assert r.status_code==200
+        out=r.json();assert out['web_usage']['status']=='blocked' and out['web_usage']['error_code']=='free_plan_required'
+        assert out['result']==out['scores']['lowres'] and len(seen)==1

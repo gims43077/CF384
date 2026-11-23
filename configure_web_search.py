@@ -1,4 +1,4 @@
-"""Store an existing TinEye key locally. Does not purchase credits or call TinEye."""
+"""Store an existing SerpApi Free-plan key locally. Does not purchase credits or call SerpApi Free-plan."""
 import getpass
 import os
 from pathlib import Path
@@ -19,10 +19,10 @@ def store_key(key,path):
         raise
 
 def main():
-    print('Use an existing TinEye API key. No purchase or search is performed.')
-    key=getpass.getpass('TinEye API key (hidden): ')
-    store_key(key,ROOT/'.runtime/tineye_api_key.txt')
+    print('Use an existing SerpApi Free-plan API key. No purchase or search is performed.')
+    key=getpass.getpass('SerpApi Free-plan API key (hidden): ')
+    store_key(key,ROOT/'.runtime/serpapi_api_key.txt')
     print('Provider key saved under .runtime. Do not share this folder.')
-    print('To enable paid searches, set CF384_WEB_SEARCH_ENABLED=1 and restart.')
+    print('To enable free-plan searches, set CF384_WEB_SEARCH_ENABLED=1 and restart.')
 
 if __name__=='__main__':main()

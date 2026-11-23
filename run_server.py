@@ -12,7 +12,7 @@ def main():
     p.add_argument('--allowed-origin',action='append',default=[],help='Additional exact browser origins')
     p.add_argument('--allowed-host',action='append',default=[],help='Additional Host header values, e.g. LAN IP')
     p.add_argument('--cache-size',type=int,default=128);p.add_argument('--max-image-mb',type=int,default=10)
-    p.add_argument('--enable-web-search',action='store_true',default=os.environ.get('CF384_WEB_SEARCH_ENABLED')=='1',help='Allow explicitly requested TinEye uploads; may consume search credits')
+    p.add_argument('--enable-web-search',action='store_true',default=os.environ.get('CF384_WEB_SEARCH_ENABLED')=='1',help='Allow explicitly requested SerpApi Free-plan searches; paid plans are blocked')
     p.add_argument('--web-search-max-calls',type=int,default=20,help='Maximum provider attempts per server session; default20')
     a=p.parse_args()
     key=read_or_create_key(a.key_file)
@@ -22,7 +22,7 @@ def main():
     print(f'API: http://{a.host}:{a.port}   Swagger UI: http://127.0.0.1:{a.port}/docs',flush=True)
     print(f'API key file: {a.key_file.resolve()} (or CF384_API_KEY environment override). Keep the key in the extension settings.',flush=True)
     print('Model loads once at startup. Close with Ctrl+C. Uploads are not retained as image files.',flush=True)
-    print('Internet search: '+('enabled for explicit requests; provider credits may be used.' if settings.web_search_enabled else 'disabled; local AI inference only.'),flush=True)
+    print('Internet search: '+('enabled for explicit requests; SerpApi Free plan only; paid plans are blocked.' if settings.web_search_enabled else 'disabled; local AI inference only.'),flush=True)
     uvicorn.run(create_app(settings),host=a.host,port=a.port,workers=1,limit_concurrency=32,timeout_keep_alive=5,log_level='info')
 
 if __name__=='__main__':main()

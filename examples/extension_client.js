@@ -3,8 +3,8 @@ export async function predictBlob(blob, {
   apiKey,
   baseUrl = 'http://127.0.0.1:8000',
   model = 'lowres',
-  timeoutMs = 30000,
   webSearch = false,
+  timeoutMs = webSearch ? 90000 : 30000,
 } = {}) {
   if (!apiKey) throw new Error('API key is required');
   if (!['original', 'adapted', 'lowres'].includes(model)) throw new Error('Invalid model');
