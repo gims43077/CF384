@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:16px/1.7 system-ui,sans-serif;max-width:1050px;margin:36px auto;padding:15px}td,th{padding:7px;border:1px solid #ddd}pre{background:#f4f6f8;padding:15px;overflow:auto}</style><h1 id="%EB%AC%B4%EB%A3%8C-%EC%9D%B8%ED%84%B0%EB%84%B7-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%82%AC%EC%9A%A9%EC%B2%98-%EA%B2%80%EC%83%89-%E2%80%94-API1.4.0">&#47924;&#47308; &#51064;&#53552;&#45367; &#51060;&#48120;&#51648; &#49324;&#50857;&#52376; &#44160;&#49353; &#8212; API1.4.0<a class="anchor-link" href="#%EB%AC%B4%EB%A3%8C-%EC%9D%B8%ED%84%B0%EB%84%B7-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%82%AC%EC%9A%A9%EC%B2%98-%EA%B2%80%EC%83%89-%E2%80%94-API1.4.0">&#182;</a></h1><p><strong>추천·적용: SerpApi Google Lens 무료 요금제.</strong> 2026-11-23 공식 요금표 기준 월250회·시간당50회입니다. Google 공식 API가 아닌 제3자 서비스입니다. CF384 가중치·기본 lowres 모델·임계값0.5는 유지하고 인터넷 검색 연결만 교체했습니다. <strong>TinEye 호출과 유료 서비스 fallback은 제거했습니다.</strong></p>
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:16px/1.7 system-ui,sans-serif;max-width:1050px;margin:36px auto;padding:15px}td,th{padding:7px;border:1px solid #ddd}pre{background:#f4f6f8;padding:15px;overflow:auto}</style><h1 id="%EB%AC%B4%EB%A3%8C-%EC%9D%B8%ED%84%B0%EB%84%B7-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%82%AC%EC%9A%A9%EC%B2%98-%EA%B2%80%EC%83%89-%E2%80%94-API-1.4.0">&#47924;&#47308; &#51064;&#53552;&#45367; &#51060;&#48120;&#51648; &#49324;&#50857;&#52376; &#44160;&#49353; &#8212; API 1.4.0<a class="anchor-link" href="#%EB%AC%B4%EB%A3%8C-%EC%9D%B8%ED%84%B0%EB%84%B7-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%82%AC%EC%9A%A9%EC%B2%98-%EA%B2%80%EC%83%89-%E2%80%94-API-1.4.0">&#182;</a></h1><p><strong>추천·적용: SerpApi Google Lens 무료 요금제.</strong> 2026-11-23 공식 요금표 기준 월 250회·시간당 50회입니다. Google 공식 API가 아닌 제3자 서비스입니다. CF384 가중치·기본 lowres 모델·임계값 0.5는 유지하고 인터넷 검색 연결만 교체했습니다. <strong>TinEye 호출과 유료 서비스 fallback은 제거했습니다.</strong></p>
 <h2 id="%ED%95%9C-%EB%B2%88%EB%A7%8C-%EC%84%A4%EC%A0%95">&#54620; &#48264;&#47564; &#49444;&#51221;<a class="anchor-link" href="#%ED%95%9C-%EB%B2%88%EB%A7%8C-%EC%84%A4%EC%A0%95">&#182;</a></h2><ol>
 <li><a href="https://serpapi.com/">SerpApi</a>에서 <strong>Free 요금제</strong>로 가입하고 <a href="https://serpapi.com/manage-api-key">API 키</a>를 확인합니다. 유료 요금제나 추가 크레딧은 구매할 필요가 없습니다.</li>
 <li><code>run_server.py</code>가 있는 폴더에서 아래를 실행하고 SerpApi 키를 숨김 입력합니다.</li>
@@ -28,10 +28,10 @@
 </pre></div>
 <h2 id="%EB%AC%B4%EB%A3%8C-%EC%9A%94%EA%B8%88%EC%A0%9C-%ED%99%95%EC%9D%B8%EA%B3%BC-%ED%98%B8%EC%B6%9C-%EC%A0%9C%ED%95%9C">&#47924;&#47308; &#50836;&#44552;&#51228; &#54869;&#51064;&#44284; &#54840;&#52636; &#51228;&#54620;<a class="anchor-link" href="#%EB%AC%B4%EB%A3%8C-%EC%9A%94%EA%B8%88%EC%A0%9C-%ED%99%95%EC%9D%B8%EA%B3%BC-%ED%98%B8%EC%B6%9C-%EC%A0%9C%ED%95%9C">&#182;</a></h2><p>각 새 검색은 <strong>무료 Account API 확인 → 이미지 업로드 → Lens exact_matches 검색</strong> 순서입니다. 별도 이미지 공개 URL이나 유료 이미지 호스팅은 필요 없습니다.</p>
 <ul>
-<li>무료 요금제, 월 요금0, 잔여 무료 검색 수, 추가 유료 크레딧0을 확인한 경우에만 업로드/검색합니다. 유료 요금제·한도 소진·확인 불가 시 <code>blocked</code>로 중단합니다. 계정 확인 API는 공식 문서상 무료이며 검색 할당량에 포함되지 않습니다.</li>
+<li>무료 요금제, 월 요금 0, 잔여 무료 검색 수, 추가 유료 크레딧 0을 확인한 경우에만 업로드/검색합니다. 유료 요금제·한도 소진·확인 불가 시 <code>blocked</code>로 중단합니다. 계정 확인 API는 공식 문서상 무료이며 검색 할당량에 포함되지 않습니다.</li>
 <li>요금제를 바꾸거나 크레딧을 구매하는 코드는 없습니다. TinEye 등 유료 제공자로 전환하지 않습니다.</li>
-<li>기본 실행당 검색 파이프라인 시도20회, 분당5회·시간당40회, 동시 외부 파이프라인1개입니다. <code>--web-search-max-calls</code>로 세션 제한을 정할 수 있습니다. 제공자 자체의 계정 한도도 적용됩니다.</li>
-<li>같은 파일의 성공 결과/후보 없음 응답은 최대128개·1시간 메모리 캐시로 재사용합니다. 자동 재시도·다음 페이지 검색은 하지 않습니다.</li>
+<li>기본 실행당 검색 파이프라인 시도 20회, 분당 5회·시간당 40회, 동시 외부 파이프라인 1개입니다. <code>--web-search-max-calls</code>로 세션 제한을 정할 수 있습니다. 제공자 자체의 계정 한도도 적용됩니다.</li>
+<li>같은 파일의 성공 결과/후보 없음 응답은 최대 128개·1시간 메모리 캐시로 재사용합니다. 자동 재시도·다음 페이지 검색은 하지 않습니다.</li>
 <li>서버 재시작 시 로컬 카운터는 초기화되지만, 매 검색마다 제공자 계정의 무료 잔여 한도를 다시 확인합니다. 계정 설정/다른 앱의 사용/제공자 정책은 운영자가 함께 관리해야 합니다.</li>
 </ul>
 <h2 id="%EB%B0%98%ED%99%98%EA%B0%92-%EC%9D%BD%EB%8A%94-%EB%B0%A9%EB%B2%95">&#48152;&#54872;&#44050; &#51069;&#45716; &#48169;&#48277;<a class="anchor-link" href="#%EB%B0%98%ED%99%98%EA%B0%92-%EC%9D%BD%EB%8A%94-%EB%B0%A9%EB%B2%95">&#182;</a></h2><ul>
@@ -85,11 +85,12 @@
 </tr>
 </tbody>
 </table>
-<p>검색 실패/차단이어도 유효한 이미지의 CF384 결과는 HTTP200으로 유지합니다. <strong>반드시 <code>web_usage.status</code>를 확인하세요.</strong> <code>GET /v1/web-search/status</code>는 키를 노출하지 않고 로컬 설정/한도를 보여줍니다. <code>ready=true</code>는 로컬 설정이 준비됐다는 뜻이며 계정/키를 외부에서 검증한 결과는 아닙니다.</p>
-<h2 id="%EC%A0%84%EC%86%A1%C2%B7%EC%A0%95%ED%99%95%EB%8F%84%C2%B7%EA%B2%80%EC%A6%9D-%EB%B2%94%EC%9C%84">&#51204;&#49569;&#183;&#51221;&#54869;&#46020;&#183;&#44160;&#51613; &#48276;&#50948;<a class="anchor-link" href="#%EC%A0%84%EC%86%A1%C2%B7%EC%A0%95%ED%99%95%EB%8F%84%C2%B7%EA%B2%80%EC%A6%9D-%EB%B2%94%EC%9C%84">&#182;</a></h2><p>이미지는 EXIF 방향 보정 후 전체 종횡비를 유지해 최대1600px/JPEG로 만들며 EXIF/GPS를 제거합니다. Image API의500KB 한도에 맞춰 필요한 경우 JPEG 품질·해상도를 더 낮춰480KB 이하로 보냅니다. CF384의 중앙 크롭 결과는 보내지 않습니다.</p>
-<p>로컬 서버는 사진을 영구 저장하지 않습니다. SerpApi와 Google로 전달되는 데이터에는 각 서비스의 정책이 적용됩니다. 공식 문서는 업로드 image_id가10분 후 만료된다고 설명하지만, 이것을 모든 외부 로그/검색 기록의 삭제 보장으로 해석하지 않습니다. 무료 요금제에서 Enterprise 전용 ZeroTrace가 적용된다고 주장하지 않습니다.</p>
+<p>검색 실패/차단이어도 유효한 이미지의 CF384 결과는 HTTP 200으로 유지합니다. <strong>반드시 <code>web_usage.status</code>를 확인하세요.</strong> <code>GET /v1/web-search/status</code>는 키를 노출하지 않고 로컬 설정/한도를 보여줍니다. <code>ready=true</code>는 로컬 설정이 준비됐다는 뜻이며 계정/키를 외부에서 검증한 결과는 아닙니다.</p>
+<h2 id="%EC%A0%84%EC%86%A1%C2%B7%EC%A0%95%ED%99%95%EB%8F%84%C2%B7%EA%B2%80%EC%A6%9D-%EB%B2%94%EC%9C%84">&#51204;&#49569;&#183;&#51221;&#54869;&#46020;&#183;&#44160;&#51613; &#48276;&#50948;<a class="anchor-link" href="#%EC%A0%84%EC%86%A1%C2%B7%EC%A0%95%ED%99%95%EB%8F%84%C2%B7%EA%B2%80%EC%A6%9D-%EB%B2%94%EC%9C%84">&#182;</a></h2><p>이미지는 EXIF 방향 보정 후 전체 종횡비를 유지해 최대 1600px/JPEG로 만들며 EXIF/GPS를 제거합니다. Image API의 500KB 한도에 맞춰 필요한 경우 JPEG 품질·해상도를 더 낮춰 480KB 이하로 보냅니다. CF384의 중앙 크롭 결과는 보내지 않습니다.</p>
+<p>로컬 서버는 사진을 영구 저장하지 않습니다. SerpApi와 Google로 전달되는 데이터에는 각 서비스의 정책이 적용됩니다. 공식 문서는 업로드 image_id가 10분 후 만료된다고 설명하지만, 이것을 모든 외부 로그/검색 기록의 삭제 보장으로 해석하지 않습니다. 무료 요금제에서 Enterprise 전용 ZeroTrace가 적용된다고 주장하지 않습니다.</p>
 <p><strong>인터넷 전체의 미사용/도용/원저작자를 확정하는 기능은 아닙니다.</strong> 색인 누락·변형·비공개 페이지가 있고, exact_matches에도 확인이 필요한 후보가 있을 수 있습니다. 검색 결과가 없다고 미사용을 확정하지 않습니다.</p>
 <p>현재 계정 키 없이 모의 응답과 로컬 API로 기능을 검증했습니다. 실제 무료 계정의 검색 품질·탐지율은 아직 측정하지 않았습니다. 유료 평가·가입·구매는 실행하지 않았습니다. 이전 TinEye 평가는 계속 보류합니다.</p>
 <p>공식 문서: <a href="https://serpapi.com/pricing">무료 요금제</a>, <a href="https://serpapi.com/account-api">Account API</a>, <a href="https://serpapi.com/google-lens-upload-an-image">파일 업로드</a>, <a href="https://serpapi.com/image-api">Image API</a>, <a href="https://serpapi.com/google-lens-exact-matches-api">동일 이미지 검색</a>.</p>
 <p>테스트: <code>python -m pytest -q tests</code>. 검색 응답은 모의 데이터이며 실제 인터넷 검색 성능 수치가 아닙니다.</p>
+
 </html>

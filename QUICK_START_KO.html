@@ -1,7 +1,7 @@
-<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:16px/1.7 system-ui,sans-serif;max-width:1000px;margin:36px auto;padding:15px}table{border-collapse:collapse}td,th{padding:7px;border:1px solid #ddd}pre{background:#f4f6f8;padding:15px;overflow:auto}a{color:#087e8b}</style><h1 id="%EB%A1%9C%EC%BB%AC-%EC%8B%A4%ED%96%89-%EC%84%A4%EB%AA%85%EC%84%9C:-CF384-+-Google-Lens-FastAPI-%EB%8D%B0%EB%AA%A8">&#47196;&#52972; &#49892;&#54665; &#49444;&#47749;&#49436;: CF384 + Google Lens FastAPI &#45936;&#47784;<a class="anchor-link" href="#%EB%A1%9C%EC%BB%AC-%EC%8B%A4%ED%96%89-%EC%84%A4%EB%AA%85%EC%84%9C:-CF384-+-Google-Lens-FastAPI-%EB%8D%B0%EB%AA%A8">&#182;</a></h1><p>API1.4.0 / 2026-11-23. <strong>Python 서버를 켜고 브라우저에서 사진 한 장으로 AI 판별과 인터넷 사용처 검색을 확인하는 방법</strong>입니다. 확장 프로그램 없이 사용할 수 있습니다.</p>
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:16px/1.7 system-ui,sans-serif;max-width:1000px;margin:36px auto;padding:15px}table{border-collapse:collapse}td,th{padding:7px;border:1px solid #ddd}pre{background:#f4f6f8;padding:15px;overflow:auto}a{color:#087e8b}</style><h1 id="%EB%A1%9C%EC%BB%AC-%EC%8B%A4%ED%96%89-%EC%84%A4%EB%AA%85%EC%84%9C:-CF384-+-Google-Lens-FastAPI-%EB%8D%B0%EB%AA%A8">&#47196;&#52972; &#49892;&#54665; &#49444;&#47749;&#49436;: CF384 + Google Lens FastAPI &#45936;&#47784;<a class="anchor-link" href="#%EB%A1%9C%EC%BB%AC-%EC%8B%A4%ED%96%89-%EC%84%A4%EB%AA%85%EC%84%9C:-CF384-+-Google-Lens-FastAPI-%EB%8D%B0%EB%AA%A8">&#182;</a></h1><p>API 1.4.0 / 2026-11-23. <strong>Python 서버를 켜고 브라우저에서 사진 한 장으로 AI 판별과 인터넷 사용처 검색을 확인하는 방법</strong>입니다. 확장 프로그램 없이 사용할 수 있습니다.</p>
 <p><strong>모든 명령은 <code>run_server.py</code>와 <code>requirements.txt</code>가 있는 폴더 안에서 실행합니다.</strong> 로컬 <code>cf384_local_api</code> 또는 GitHub ZIP을 푼 해당 폴더에서 터미널을 여세요. 두 번째 터미널도 같은 폴더에서 엽니다.</p>
 <p>이미 설치했다면 <strong>1번을 건너뛰고 2번부터</strong> 진행하세요. 검색 키도 저장했다면 <strong>3번부터</strong> 진행하면 됩니다.</p>
-<h2 id="1.-%EC%B2%98%EC%9D%8C-%ED%95%9C-%EB%B2%88%EB%A7%8C:-%EC%84%A4%EC%B9%98%EC%99%80-%EB%AA%A8%EB%8D%B8-%EC%A4%80%EB%B9%84">1. &#52376;&#51020; &#54620; &#48264;&#47564;: &#49444;&#52824;&#50752; &#47784;&#45944; &#51456;&#48708;<a class="anchor-link" href="#1.-%EC%B2%98%EC%9D%8C-%ED%95%9C-%EB%B2%88%EB%A7%8C:-%EC%84%A4%EC%B9%98%EC%99%80-%EB%AA%A8%EB%8D%B8-%EC%A4%80%EB%B9%84">&#182;</a></h2><p>64비트 Python3.11을 준비합니다. GitHub에서 받는다면 <a href="https://github.com/gims43077/CF384">저장소</a>의 <strong>Code → Download ZIP</strong>을 풀고 <code>run_server.py</code>가 보이는 폴더에서 아래를 실행합니다.</p>
+<h2 id="1.-%EC%B2%98%EC%9D%8C-%ED%95%9C-%EB%B2%88%EB%A7%8C:-%EC%84%A4%EC%B9%98%EC%99%80-%EB%AA%A8%EB%8D%B8-%EC%A4%80%EB%B9%84">1. &#52376;&#51020; &#54620; &#48264;&#47564;: &#49444;&#52824;&#50752; &#47784;&#45944; &#51456;&#48708;<a class="anchor-link" href="#1.-%EC%B2%98%EC%9D%8C-%ED%95%9C-%EB%B2%88%EB%A7%8C:-%EC%84%A4%EC%B9%98%EC%99%80-%EB%AA%A8%EB%8D%B8-%EC%A4%80%EB%B9%84">&#182;</a></h2><p>64비트 Python 3.11을 준비합니다. GitHub에서 받는다면 <a href="https://github.com/gims43077/CF384">저장소</a>의 <strong>Code → Download ZIP</strong>을 풀고 <code>run_server.py</code>가 보이는 폴더에서 아래를 실행합니다.</p>
 <h3 id="Mac">Mac<a class="anchor-link" href="#Mac">&#182;</a></h3><div class="highlight"><pre><span></span>python3.11<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
 .venv/bin/python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
 .venv/bin/python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
@@ -29,7 +29,7 @@
 <p>Windows PowerShell:</p>
 <div class="highlight"><pre><span></span><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">run_server</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-enable-web-search</span>
 </pre></div>
-<p><strong><code>Application startup complete</code>가 나오면 준비 완료입니다. 이 터미널은 켜 두세요.</strong> 이미 서버가 실행 중이면 먼저 해당 터미널에서Ctrl+C로 종료한 뒤 다시 실행합니다. 키를 새로 저장하거나 바꿨을 때도 서버를 재시작합니다.</p>
+<p><strong><code>Application startup complete</code>가 나오면 준비 완료입니다. 이 터미널은 켜 두세요.</strong> 이미 서버가 실행 중이면 먼저 해당 터미널에서 Ctrl+C로 종료한 뒤 다시 실행합니다. 키를 새로 저장하거나 바꿨을 때도 서버를 재시작합니다.</p>
 <h2 id="4.-%EC%83%88-%ED%84%B0%EB%AF%B8%EB%84%90-2:-%EB%8D%B0%EB%AA%A8%EC%97%90-%EC%9E%85%EB%A0%A5%ED%95%A0-%EB%A1%9C%EC%BB%AC-API-%ED%82%A4-%ED%99%95%EC%9D%B8">4. &#49352; &#53552;&#48120;&#45328; 2: &#45936;&#47784;&#50640; &#51077;&#47141;&#54624; &#47196;&#52972; API &#53412; &#54869;&#51064;<a class="anchor-link" href="#4.-%EC%83%88-%ED%84%B0%EB%AF%B8%EB%84%90-2:-%EB%8D%B0%EB%AA%A8%EC%97%90-%EC%9E%85%EB%A0%A5%ED%95%A0-%EB%A1%9C%EC%BB%AC-API-%ED%82%A4-%ED%99%95%EC%9D%B8">&#182;</a></h2><p>같은 서버 폴더에서 새 터미널을 열고 실행합니다.</p>
 <p>Mac:</p>
 <div class="highlight"><pre><span></span>.venv/bin/python<span class="w"> </span>client.py<span class="w"> </span>--show-key
@@ -87,7 +87,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="6.-%EB%8B%A4%EC%9D%8C%EB%B6%80%ED%84%B0-%EC%8B%A4%ED%96%89%C2%B7%EC%A2%85%EB%A3%8C%C2%B7%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8">6. &#45796;&#51020;&#48512;&#53552; &#49892;&#54665;&#183;&#51333;&#47308;&#183;&#50629;&#45936;&#51060;&#53944;<a class="anchor-link" href="#6.-%EB%8B%A4%EC%9D%8C%EB%B6%80%ED%84%B0-%EC%8B%A4%ED%96%89%C2%B7%EC%A2%85%EB%A3%8C%C2%B7%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8">&#182;</a></h2><p>설치와 키 저장을 반복할 필요 없이 <strong>3번 서버 실행 →4번 로컬 키 확인 →5번 데모 접속</strong>만 하면 됩니다. 종료는 서버 터미널에서 <strong>Ctrl+C</strong>입니다.</p>
+<h2 id="6.-%EB%8B%A4%EC%9D%8C%EB%B6%80%ED%84%B0-%EC%8B%A4%ED%96%89%C2%B7%EC%A2%85%EB%A3%8C%C2%B7%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8">6. &#45796;&#51020;&#48512;&#53552; &#49892;&#54665;&#183;&#51333;&#47308;&#183;&#50629;&#45936;&#51060;&#53944;<a class="anchor-link" href="#6.-%EB%8B%A4%EC%9D%8C%EB%B6%80%ED%84%B0-%EC%8B%A4%ED%96%89%C2%B7%EC%A2%85%EB%A3%8C%C2%B7%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8">&#182;</a></h2><p>설치와 키 저장을 반복할 필요 없이 <strong>3번 서버 실행 → 4번 로컬 키 확인 → 5번 데모 접속</strong>만 하면 됩니다. 종료는 서버 터미널에서 <strong>Ctrl+C</strong>입니다.</p>
 <p>Git으로 받았다면 서버를 종료하고 같은 폴더에서 아래를 실행한 뒤 3번으로 다시 켭니다.</p>
 <div class="highlight"><pre><span></span>git<span class="w"> </span>pull<span class="w"> </span>--ff-only
 </pre></div>
@@ -126,10 +126,11 @@
 </tr>
 <tr>
   <td>이미 포트를 사용 중이라는 오류</td>
-  <td>기존 서버를Ctrl+C로 종료한 뒤 3번 재실행</td>
+  <td>기존 서버를 Ctrl+C로 종료한 뒤 3번 재실행</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Google Lens 없이 CF384만 확인하려면</strong> 서버를 <code>run_server.py</code>로 실행하고 데모에서 인터넷 검색 체크를 끄면 됩니다. 이 경우 SerpApi 키 없이 사용할 수 있습니다.</p>
 <p>실제 검색 품질·탐지율은 SerpApi 키 미설정으로 아직 미측정입니다. 로컬 API와 모의 검색 연결은 검증했으며 Windows 신규 설치는 이 Mac에서 직접 검증하지 않았습니다. 검색 제한·데이터 전송 등의 상세 내용은 <a href="docs/WEB_USAGE_SEARCH_KO.md">무료 검색 설정</a>을 참고하세요.</p>
+
 </html>
