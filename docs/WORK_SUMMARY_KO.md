@@ -43,7 +43,7 @@ git pull --ff-only
 .venv/bin/python run_server.py
 ```
 
-Windows 서버 실행: `.\.venv\Scripts\python.exe run_server.py`. 브라우저를 새로고침하세요. API키는 기존 설치의 것을 그대로 사용합니다. 확장이 `model=adapted`를 명시한다면 `model=lowres`로 바꾸거나 query를 생략해야 최신 기본 모델을 사용합니다. 응답의 `selected_model`이 `lowres`, `api_version`이 `1.2.0`인지 확인하세요. 설치 명령은 [간단 사용법](../QUICK_START_KO.md)에 있습니다.
+Windows 서버 실행: `.\.venv\Scripts\python.exe run_server.py`. 브라우저를 새로고침하세요. API키는 기존 설치의 것을 그대로 사용합니다. 확장이 `model=adapted`를 명시한다면 `model=lowres`로 바꾸거나 query를 생략해야 최신 기본 모델을 사용합니다. 응답의 `selected_model`이 `lowres`, 현재 `api_version`이 `1.4.0`인지 확인하세요. 설치 명령은 [간단 사용법](../QUICK_START_KO.md)에 있습니다.
 
 공개 저장소에는 키·사진·개인 경로·가상환경·평가 원본 데이터를 올리지 않습니다. [전체 지표](evaluation/web_thumbnail_metrics.csv), [JPEG85 대조군](evaluation/jpeg85_control_metrics.csv), [생성기별 지표](evaluation/web_thumbnail_per_family.csv), [불확실성 구간](evaluation/bootstrap_ci.csv)을 첨부했습니다. 논문 보고 성능이 아닌 이번 로컬 직접 측정 결과입니다.
 
@@ -56,3 +56,8 @@ CF384 가중치는 그대로 두고 TinEye 역이미지 검색 어댑터를 추�
 ## 2026-11-23: 무료 검색으로 변경 (API1.4.0)
 
 사용자 요청으로 TinEye 유료 검색을 제외하고 SerpApi Google Lens Free 요금제 전용으로 교체했습니다. 매 검색 전 무료 요금제/잔여 한도를 확인하고 유료 요금제·한도 초과·확인 불가면 중단합니다. 이미지 업로드와 exact_matches 검색을 연결했으며 유료 fallback은 없습니다. CF384 모델은 변경하지 않았습니다. 실제 계정 키가 아직 없어 모의 테스트/로컬 HTTP까지만 검증하고 검색 품질 측정은 수행하지 않았습니다. [무료 API 설정](WEB_USAGE_SEARCH_KO.md).
+
+
+## 2026-11-23: 현재 배포 상태 정리
+
+[현재 모델 설명](CURRENT_MODEL_KO.md)에 적용 기술, 전체 지표, 이미지별 예측 변화와 사용 시 한계를 정리했습니다. 기존 코드와 저해상도 head는 이미 배포된 상태이며 이번 정리는 새 학습이나 가중치 변경이 아닙니다. 기술 설명 PDF는 공개 저장소에 포함하지 않았습니다.
