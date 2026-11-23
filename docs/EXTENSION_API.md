@@ -2,6 +2,56 @@
 
 API v1.4.0 / 2026-11-23. 서버 코드는 완성되어 있으며, Chrome 확장 자체는 이 패키지의 구현 범위가 아니다.
 
+## 개발자에게 전달할 연결 요약
+
+| 담당 | 작업 |
+|---|---|
+|Python 서버|이미지 검사·CF384 추론·선택적 무료 인터넷 검색·JSON 응답|
+|확장 content script|현재 이미지 요소 식별·결과 overlay 표시|
+|확장 service worker|권한 범위 안에서 이미지 bytes 확보·로컬 서버 요청·결과 전달|
+|확장 설정 화면|사용자의 서버 주소와 **CF384 로컬 API 키** 입력|
+
+**SerpApi 키는 서버 전용입니다.** 확장 코드에 넣거나 사용자가 보는 웹페이지로 전달하지 않습니다. 각 사용자가 자신의 Python 서버를 실행하는 로컬 구성입니다. 사용자가 하는 설치/실행 단계는 [간단 사용법](../QUICK_START_KO.md)을 참고하세요.
+
+연결 함수 `examples/extension_client.js`를 확장 폴더로 복사하고, 모듈 service worker에서 불러올 수 있습니다. 아래 코드는 이미 `imageBlob`과 `localApiKey`를 확보한 부분부터의 연결 예시입니다. 완성된 확장 코드가 아닙니다.
+
+```js
+import { predictBlob } from './extension_client.js';
+
+// 화면 이미지의 AI 판별: 기본적으로 인터넷 검색은 호출하지 않음
+const classification = await predictBlob(imageBlob, {
+  apiKey: localApiKey,
+  baseUrl: 'http://127.0.0.1:8000',
+  webSearch: false,
+});
+// classification.result.label / classification.result.score_ai 표시
+
+// 사용자가 '인터넷 사용처 찾기'를 선택했을 때만 별도 실행
+const searched = await predictBlob(imageBlob, {
+  apiKey: localApiKey,
+  baseUrl: 'http://127.0.0.1:8000',
+  webSearch: true,
+});
+// searched.web_usage.status 확인 후 matches[].backlinks[].page_url 표시
+```
+
+두 요청의 이미지 bytes가 같으면 서버는 CF384 점수 캐시를 재사용합니다. 외부 검색은 `webSearch: true`에서만 실행합니다. `imageBlob`은 파일 내용이어야 하며 이미지 URL 문자열을 그대로 보내는 방식은 아닙니다. 이미지 접근 권한과 bytes 획득은 확장 측에서 구현합니다.
+
+모듈 service worker 설정 예시(전체 manifest가 아님):
+
+```json
+{
+  "background": {"service_worker": "service-worker.js", "type": "module"},
+  "host_permissions": ["http://127.0.0.1/*", "http://localhost/*"]
+}
+```
+
+이미지를 가져오는 원본 사이트 권한 및 페이지 주입 권한은 확장의 대상 사이트에 맞게 추가해야 합니다. 서버 권한만으로 임의 사이트 이미지를 읽을 수 있는 것은 아닙니다. content script가 임의 URL을 서버/service worker에 요청하게 만들지 말고, 메시지 발신자와 이미지 출처 범위를 검증하세요.
+
+화면에서는 **AI 생성 판별**, **인터넷 일치 후보**, **검색 미실행/실패**를 분리해서 표시하세요. `blocked`·`error`·`not_configured`를 '재사용 없음'으로 표시하면 안 됩니다. 인터넷 검색은 클릭한 이미지에만 실행하는 방식이 무료 한도 관리에 적합합니다.
+
+연결 확인 순서는 `/health` → `/demo` CF384 판별 → 확장 연결 → 선택적 웹 검색입니다. 실제 Chrome 확장 통합 및 실제 SerpApi 검색 품질은 아직 별도 검증이 필요합니다.
+
 저해상도추가: `model=lowres`로160~300px 축소 학습을 더한별도head를선택한다. 기본 대표 모델은 `lowres`로 변경했다. `model` 생략 시 최신 head를 사용한다. 명시적으로 `model=adapted`를 보내는 기존 확장은 이전 head를 계속 사용하므로 설정을 `lowres`로 바꿔야 한다. `scores.lowres`도항상반환하며, `selected_model`은`original/adapted/lowres`중하나다. 새모델파일을복사하고서버를재시작해야한다. 모델ID도변경되어확장캐시무효화가필요하다.
 
 ## 기본 설정
@@ -88,6 +138,9 @@ timeout/429 재시도 메타데이터를 포함한 함수는 `examples/extension
 | `image` | EXIF 보정 후 크기/원본 포맷/원본 bytes SHA256/용량 |
 | `timing` | queue/preprocess/inference/total 밀리초 |
 | `notice` | 진위 확정이 아니라는 안내 |
+| `web_usage.status` | 웹 검색 미요청/설정 누락/차단/성공/오류 상태 |
+| `web_usage.matches` | 제공자의 동일 이미지 일치 후보 |
+| `web_usage.cached` | 웹 검색 결과 캐시 여부. CF384의 `cached`와 별개 |
 
 `timing.total_ms`는 endpoint의 처리 시간으로 브라우저 네트워크/전체 multipart 수신 시간까지 포함하는 종단 지연이 아니다. 캐시는 inference_ms=0이다. 첫 요청의 초기 실행은 이후 요청보다 느릴 수 있다. 작은 샘플의 시간은 처리량 벤치마크가 아니다.
 
