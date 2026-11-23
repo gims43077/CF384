@@ -1,5 +1,27 @@
-from typing import Literal
+from typing import Literal,Optional
 from pydantic import BaseModel,Field
+
+class WebBacklink(BaseModel):
+    page_url: str
+    image_url: Optional[str]=None
+    crawl_date: Optional[str]=None
+
+class WebMatch(BaseModel):
+    image_url: Optional[str]=None
+    domain: Optional[str]=None
+    provider_score: Optional[float]=None
+    backlinks: list[WebBacklink]
+
+class WebUsage(BaseModel):
+    status: Literal['not_requested','disabled','not_configured','matches_found','no_matches','error','rate_limited']
+    provider: str
+    searched_at: Optional[str]=None
+    cached: bool=False
+    matches: list[WebMatch]=Field(default_factory=list)
+    returned_matches: int=0
+    provider_matches_in_page: Optional[int]=None
+    error_code: Optional[str]=None
+    notice: str
 
 class Score(BaseModel):
     score_ai: float=Field(ge=0,le=1)
@@ -32,3 +54,4 @@ class Prediction(BaseModel):
     image: ImageInfo
     timing: Timings
     notice: str
+    web_usage: WebUsage

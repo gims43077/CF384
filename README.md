@@ -1,5 +1,7 @@
 # CF384 Local Image Detection API
 
+**2026-11-23 / API1.3.0:** CF384 판별에 인터넷 사용처 검색 옵션을 추가했습니다. `web_search=true` 요청과 서버 허용/검색 키가 모두 있어야 TinEye로 검색합니다. [설정·연동 설명](docs/WEB_USAGE_SEARCH_KO.md). TinEye API는 유료이며 실제 계정 검색은 아직 검증하지 않았습니다. 기존 lowres 가중치와 임계값0.5는 그대로입니다.
+
 CF384 기반의 로컬 정지 이미지 탐지 API입니다. 원본 분류기, L2-SP+증강 분류기, 160~300px 축소 학습 분류기의 점수를 한 번의 백본 추론으로 반환합니다. Chrome 확장 프로그램은 포함하지 않으며, 연결 예제와 API 명세를 제공합니다.
 
 **이 저장소에는 실제 API 키, 가상환경, 사용자 사진, 평가 원본 데이터, 실행 로그, 대형 백본 가중치를 포함하지 않습니다.** 작은 학습 head 두 개는 `models/`에 포함합니다. 공식 CF384 백본은 아래 명령으로 다운로드합니다. 인증 기능과 `X-API-Key` 헤더 이름은 코드에 유지합니다.
@@ -59,6 +61,7 @@ Linux는 동일한가상환경구성을사용하며, CPU전용PyTorch는Windows�
 |---|---|
 |`GET /health`|준비상태|
 |`GET /v1/model`|모델설명·SHA256·장치|
+|`GET /v1/web-search/status`|외부 검색 설정·호출 한도 확인|
 |`POST /v1/predict`|최신 lowres가 기본 결과|
 |`POST /v1/predict?model=adapted`|기존개선head를대표결과로선택|
 |`POST /v1/predict?model=lowres`|축소학습head를대표결과로선택|

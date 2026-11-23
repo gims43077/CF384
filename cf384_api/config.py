@@ -7,6 +7,12 @@ from typing import Tuple
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def read_provider_key():
+    override=os.environ.get('TINEYE_API_KEY')
+    if override:return override
+    path=ROOT/'.runtime/tineye_api_key.txt'
+    return path.read_text(encoding='utf8').strip() if path.exists() else ''
+
 def read_or_create_key(path=ROOT/'.runtime/api_key.txt'):
     override=os.environ.get('CF384_API_KEY')
     if override:return override
@@ -36,9 +42,16 @@ class Settings:
     extension_ids: Tuple[str,...]=()
     allowed_origins: Tuple[str,...]=('http://127.0.0.1:8000','http://localhost:8000')
     allowed_hosts: Tuple[str,...]=('127.0.0.1','localhost')
+    tineye_api_key: str=field(default_factory=read_provider_key,repr=False)
+    web_search_enabled: bool=field(default_factory=lambda:os.environ.get('CF384_WEB_SEARCH_ENABLED')=='1')
+    web_search_timeout: float=20.0
+    web_search_cache_ttl: float=3600.0
+    web_search_max_calls: int=20
 
     def __post_init__(self):
         if len(self.api_key)<16:raise ValueError('API key must be at least 16 characters')
+        if not 1<=self.web_search_timeout<=30 or not 1<=self.web_search_cache_ttl<=86400 or not 1<=self.web_search_max_calls<=1000:raise ValueError('Invalid web search limits')
+        if any(c in self.tineye_api_key for c in ('\n','\r')):raise ValueError('Invalid provider key')
         if self.device not in ('cpu','mps','cuda','auto'):raise ValueError('device must be cpu/mps/cuda/auto')
         if not 1<=self.threads<=32:raise ValueError('threads must be 1..32')
         if self.cache_size<0 or self.max_image_bytes<1 or self.max_pixels<1 or self.max_pending<1 or self.queue_timeout<=0:raise ValueError('Invalid resource limit')

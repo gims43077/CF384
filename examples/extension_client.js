@@ -4,6 +4,7 @@ export async function predictBlob(blob, {
   baseUrl = 'http://127.0.0.1:8000',
   model = 'lowres',
   timeoutMs = 30000,
+  webSearch = false,
 } = {}) {
   if (!apiKey) throw new Error('API key is required');
   if (!['original', 'adapted', 'lowres'].includes(model)) throw new Error('Invalid model');
@@ -12,7 +13,7 @@ export async function predictBlob(blob, {
   try {
     const body = new FormData();
     body.append('file', blob, 'image');
-    const response = await fetch(`${baseUrl.replace(/\/$/, '')}/v1/predict?model=${model}`, {
+    const response = await fetch(`${baseUrl.replace(/\/$/, '')}/v1/predict?model=${model}&web_search=${Boolean(webSearch)}`, {
       method: 'POST', headers: { 'X-API-Key': apiKey }, body, signal: controller.signal,
     });
     const text = await response.text();

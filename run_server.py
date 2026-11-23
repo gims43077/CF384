@@ -1,5 +1,5 @@
 """Run the standalone API. One process, loopback by default, no cloud resources."""
-import argparse
+import argparse,os
 from pathlib import Path
 from cf384_api.config import ROOT,Settings,read_or_create_key
 
@@ -12,14 +12,17 @@ def main():
     p.add_argument('--allowed-origin',action='append',default=[],help='Additional exact browser origins')
     p.add_argument('--allowed-host',action='append',default=[],help='Additional Host header values, e.g. LAN IP')
     p.add_argument('--cache-size',type=int,default=128);p.add_argument('--max-image-mb',type=int,default=10)
+    p.add_argument('--enable-web-search',action='store_true',default=os.environ.get('CF384_WEB_SEARCH_ENABLED')=='1',help='Allow explicitly requested TinEye uploads; may consume search credits')
+    p.add_argument('--web-search-max-calls',type=int,default=20,help='Maximum provider attempts per server session; default20')
     a=p.parse_args()
     key=read_or_create_key(a.key_file)
-    settings=Settings(api_key=key,model_dir=a.models.resolve(),device=a.device,threads=a.threads,cache_size=a.cache_size,max_image_bytes=a.max_image_mb*1024*1024,extension_ids=tuple(a.extension_id),allowed_origins=tuple([f'http://127.0.0.1:{a.port}',f'http://localhost:{a.port}']+a.allowed_origin),allowed_hosts=tuple(['127.0.0.1','localhost']+a.allowed_host))
+    settings=Settings(api_key=key,model_dir=a.models.resolve(),device=a.device,threads=a.threads,cache_size=a.cache_size,max_image_bytes=a.max_image_mb*1024*1024,extension_ids=tuple(a.extension_id),allowed_origins=tuple([f'http://127.0.0.1:{a.port}',f'http://localhost:{a.port}']+a.allowed_origin),allowed_hosts=tuple(['127.0.0.1','localhost']+a.allowed_host),web_search_enabled=a.enable_web_search,web_search_max_calls=a.web_search_max_calls)
     from cf384_api.app import create_app
     import uvicorn
     print(f'API: http://{a.host}:{a.port}   Swagger UI: http://127.0.0.1:{a.port}/docs',flush=True)
     print(f'API key file: {a.key_file.resolve()} (or CF384_API_KEY environment override). Keep the key in the extension settings.',flush=True)
     print('Model loads once at startup. Close with Ctrl+C. Uploads are not retained as image files.',flush=True)
+    print('Internet search: '+('enabled for explicit requests; provider credits may be used.' if settings.web_search_enabled else 'disabled; local AI inference only.'),flush=True)
     uvicorn.run(create_app(settings),host=a.host,port=a.port,workers=1,limit_concurrency=32,timeout_keep_alive=5,log_level='info')
 
 if __name__=='__main__':main()

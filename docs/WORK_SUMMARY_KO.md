@@ -46,3 +46,8 @@ git pull --ff-only
 Windows 서버 실행: `.\.venv\Scripts\python.exe run_server.py`. 브라우저를 새로고침하세요. API키는 기존 설치의 것을 그대로 사용합니다. 확장이 `model=adapted`를 명시한다면 `model=lowres`로 바꾸거나 query를 생략해야 최신 기본 모델을 사용합니다. 응답의 `selected_model`이 `lowres`, `api_version`이 `1.2.0`인지 확인하세요. 설치 명령은 [간단 사용법](../QUICK_START_KO.md)에 있습니다.
 
 공개 저장소에는 키·사진·개인 경로·가상환경·평가 원본 데이터를 올리지 않습니다. [전체 지표](evaluation/web_thumbnail_metrics.csv), [JPEG85 대조군](evaluation/jpeg85_control_metrics.csv), [생성기별 지표](evaluation/web_thumbnail_per_family.csv), [불확실성 구간](evaluation/bootstrap_ci.csv)을 첨부했습니다. 논문 보고 성능이 아닌 이번 로컬 직접 측정 결과입니다.
+
+
+## 2026-11-23: 인터넷 사용처 검색 연결 (API1.3.0)
+
+CF384 가중치는 그대로 두고 TinEye 역이미지 검색 어댑터를 추가했습니다. 같은 요청에서 AI 판별과 사용처 URL을 별도로 반환하고, 데모·Python·JS 클라이언트에도 검색 옵션을 연결했습니다. 설정되지 않았거나 실패하면 검색 실패 상태를 반환하며 CF384 결과는 유지합니다. 실제 외부 검색은 계정 키/크레딧과 사용 승인 후 별도 검증해야 합니다. 이번 작업에서는 유료 호출·가입·결제하지 않았습니다. 모의 응답 테스트는 실제 검색 성능 평가가 아닙니다. [설정 방법](WEB_USAGE_SEARCH_KO.md).

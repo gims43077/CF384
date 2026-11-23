@@ -3,7 +3,7 @@
   "info": {
     "title": "CF384 Local Image Detection API",
     "description": "Local still-image inference. Scores are estimates, not image authenticity verification. X-API-Key required for /v1/*.",
-    "version": "1.2.0"
+    "version": "1.3.0"
   },
   "paths": {
     "/health": {
@@ -49,6 +49,30 @@
         ]
       }
     },
+    "/v1/web-search/status": {
+      "get": {
+        "tags": [
+          "Web search"
+        ],
+        "summary": "Web Search Status",
+        "operationId": "web_search_status_v1_web_search_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
     "/v1/predict": {
       "post": {
         "tags": [
@@ -75,6 +99,16 @@
               "type": "string",
               "default": "lowres",
               "title": "Model"
+            }
+          },
+          {
+            "name": "web_search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Web Search"
             }
           }
         ],
@@ -247,6 +281,9 @@
           "notice": {
             "type": "string",
             "title": "Notice"
+          },
+          "web_usage": {
+            "$ref": "#/components/schemas/WebUsage"
           }
         },
         "type": "object",
@@ -262,7 +299,8 @@
           "cached",
           "image",
           "timing",
-          "notice"
+          "notice",
+          "web_usage"
         ],
         "title": "Prediction"
       },
@@ -366,6 +404,172 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "WebBacklink": {
+        "properties": {
+          "page_url": {
+            "type": "string",
+            "title": "Page Url"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "crawl_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crawl Date"
+          }
+        },
+        "type": "object",
+        "required": [
+          "page_url"
+        ],
+        "title": "WebBacklink"
+      },
+      "WebMatch": {
+        "properties": {
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "domain": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Domain"
+          },
+          "provider_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider Score"
+          },
+          "backlinks": {
+            "items": {
+              "$ref": "#/components/schemas/WebBacklink"
+            },
+            "type": "array",
+            "title": "Backlinks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "backlinks"
+        ],
+        "title": "WebMatch"
+      },
+      "WebUsage": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "not_requested",
+              "disabled",
+              "not_configured",
+              "matches_found",
+              "no_matches",
+              "error",
+              "rate_limited"
+            ],
+            "title": "Status"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "searched_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Searched At"
+          },
+          "cached": {
+            "type": "boolean",
+            "title": "Cached",
+            "default": false
+          },
+          "matches": {
+            "items": {
+              "$ref": "#/components/schemas/WebMatch"
+            },
+            "type": "array",
+            "title": "Matches"
+          },
+          "returned_matches": {
+            "type": "integer",
+            "title": "Returned Matches",
+            "default": 0
+          },
+          "provider_matches_in_page": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider Matches In Page"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "notice": {
+            "type": "string",
+            "title": "Notice"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "provider",
+          "notice"
+        ],
+        "title": "WebUsage"
       }
     },
     "securitySchemes": {

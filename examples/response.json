@@ -1,5 +1,5 @@
 {
-  "api_version": "1.2.0",
+  "api_version": "1.3.0",
   "request_id": "cbe86009-533f-483b-95f4-55534f07a3a6",
   "model_id": "cf384-l2sp-aug-lowres-default-20261119",
   "selected_model": "lowres",
@@ -41,5 +41,16 @@
     "inference_ms": 99.5225839999998,
     "total_ms": 114.2397079999995
   },
-  "notice": "Research model score, not a calibrated probability or proof of image authenticity."
+  "notice": "Research model score, not a calibrated probability or proof of image authenticity.",
+  "web_usage": {
+    "status": "not_requested",
+    "provider": "tineye",
+    "searched_at": null,
+    "cached": false,
+    "matches": [],
+    "returned_matches": 0,
+    "provider_matches_in_page": null,
+    "error_code": null,
+    "notice": "Matches cover the provider index only. No match does not mean unused. Crawl dates are not publication dates or proof of first ownership. Matching does not determine AI generation or copyright infringement."
+  }
 }

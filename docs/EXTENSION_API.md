@@ -1,6 +1,6 @@
 # 확장 프로그램 개발자용 API 계약
 
-API v1.2.0 / 2026-11-19. 서버 코드는 완성되어 있으며, Chrome 확장 자체는 이 패키지의 구현 범위가 아니다.
+API v1.3.0 / 2026-11-23. 서버 코드는 완성되어 있으며, Chrome 확장 자체는 이 패키지의 구현 범위가 아니다.
 
 저해상도추가: `model=lowres`로160~300px 축소 학습을 더한별도head를선택한다. 기본 대표 모델은 `lowres`로 변경했다. `model` 생략 시 최신 head를 사용한다. 명시적으로 `model=adapted`를 보내는 기존 확장은 이전 head를 계속 사용하므로 설정을 `lowres`로 바꿔야 한다. `scores.lowres`도항상반환하며, `selected_model`은`original/adapted/lowres`중하나다. 새모델파일을복사하고서버를재시작해야한다. 모델ID도변경되어확장캐시무효화가필요하다.
 
@@ -124,3 +124,10 @@ Host 검사 오류, CORS preflight 거절, Uvicorn의 연결 수 제한 등 전�
 6. 서버 미실행은“연결 안 됨”, 미지원은“검사 불가”로 구분. 미검사를 real로 표시하지 않기.
 
 서버도 SHA256 캐시를 사용하지만 전체 bytes를 보내야 캐시를 확인할 수 있다. 따라서 확장 자체의 URL/bytes 기반 캐시가 네트워크 비용을 줄인다. 서버 모델ID가 바뀌면 확장 캐시도 무효화한다. 점수는 이미지 내용과 인코딩/해상도에 민감하므로 URL이 같아도 서버 내용이 바뀐 경우 오래된 결과를 재사용하지 않도록 한다.
+
+
+## 인터넷 사용처 검색 추가
+
+`POST /v1/predict?web_search=true`로 같은 파일의 인터넷 일치 후보를 CF384 결과와 함께 받습니다. 기본값은false입니다. 서버에 TinEye 키와 외부 검색 허용 설정이 필요합니다. 확장은 사용자에게 외부 전송·크레딧 사용을 알리고 요청해야 합니다. TinEye 키는 서버에만 보관하며 브라우저로 보내지 않습니다.
+
+`web_usage.status`가 `matches_found`일 때 `web_usage.matches[].backlinks[].page_url`을 사용처 링크로 표시합니다. `no_matches`는 색인 내 후보 없음, `error`/`disabled`/`not_configured`는 검색을 완료하지 못한 상태입니다. 이들은 이미지 미사용 판정이 아닙니다. AI 점수와 별도 항목으로 표시하세요. 상세 계약은 [인터넷 검색 문서](WEB_USAGE_SEARCH_KO.md), 스키마는 OpenAPI를 참고하세요.

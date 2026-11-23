@@ -15,6 +15,7 @@ from . import __version__
 from .config import ROOT,Settings,read_or_create_key
 from .engine import Detector,ImageError,MODEL_ID,NOTICE
 from .schemas import Prediction
+from .web_search import WebSearch
 
 LOGGER=logging.getLogger('cf384_api')
 
@@ -59,6 +60,7 @@ def create_app(settings: Optional[Settings]=None,detector=None):
     @asynccontextmanager
     async def lifespan(app):
         app.state.detector=detector or Detector(settings);app.state.semaphore=asyncio.Semaphore(1);app.state.pending=0
+        app.state.web_search=WebSearch(settings)
         yield
         app.state.detector.close()
     app=FastAPI(title='CF384 Local Image Detection API',version=__version__,description='Local still-image inference. Scores are estimates, not image authenticity verification. X-API-Key required for /v1/*.',lifespan=lifespan)
@@ -88,8 +90,11 @@ def create_app(settings: Optional[Settings]=None,detector=None):
     @app.get('/v1/model',dependencies=[Depends(authorized)],tags=['Model'])
     async def model_info(request: Request):return request.app.state.detector.metadata()
 
+    @app.get('/v1/web-search/status',dependencies=[Depends(authorized)],tags=['Web search'])
+    async def web_search_status(request: Request):return request.app.state.web_search.status()
+
     @app.post('/v1/predict',response_model=Prediction,dependencies=[Depends(authorized)],responses={400:{'description':'Empty/corrupt image or unexpected fields'},401:{'description':'Invalid API key'},403:{'description':'Disallowed browser origin'},413:{'description':'Body/image/pixel limit'},415:{'description':'Unsupported format or animation'},429:{'description':'Server busy; retry later'}},tags=['Prediction'])
-    async def predict(request: Request,file: UploadFile=File(...),model: Literal['original','adapted','lowres']='lowres'):
+    async def predict(request: Request,file: UploadFile=File(...),model: Literal['original','adapted','lowres']='lowres',web_search: bool=False):
         start=time.perf_counter();request_id=request.state.request_id
         try:
             form=await request.form()
@@ -114,7 +119,8 @@ def create_app(settings: Optional[Settings]=None,detector=None):
             request.app.state.pending-=1
         def score(value):return dict(score_ai=value,prediction=int(value>=.5),label='ai_generated' if value>=.5 else 'real')
         scores={k:score(v) for k,v in result['scores'].items()}
-        return dict(api_version=__version__,request_id=request_id,model_id=MODEL_ID,selected_model=model,result=scores[model],scores=scores,threshold=.5,score_kind='uncalibrated_model_score',cached=result['cached'],image=result['image'],timing=dict(queue_ms=queue_ms,preprocess_ms=result['preprocess_ms'],inference_ms=result['inference_ms'],total_ms=(time.perf_counter()-start)*1000),notice=NOTICE)
+        web_usage=await request.app.state.web_search.search(raw,requested=web_search)
+        return dict(api_version=__version__,request_id=request_id,model_id=MODEL_ID,selected_model=model,result=scores[model],scores=scores,threshold=.5,score_kind='uncalibrated_model_score',cached=result['cached'],image=result['image'],timing=dict(queue_ms=queue_ms,preprocess_ms=result['preprocess_ms'],inference_ms=result['inference_ms'],total_ms=(time.perf_counter()-start)*1000),notice=NOTICE,web_usage=web_usage)
 
     app.add_middleware(RequestGate,settings=settings)
     app.add_middleware(CORSMiddleware,allow_origins=settings.cors_origins,allow_origin_regex=settings.cors_regex,allow_methods=['GET','POST','OPTIONS'],allow_headers=['X-API-Key','Content-Type'],expose_headers=['Retry-After'],allow_credentials=False)

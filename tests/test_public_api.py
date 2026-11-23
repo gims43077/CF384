@@ -61,7 +61,7 @@ def test_host_header(client):
 def test_lowres_default_and_explicit_legacy_override(client):
     headers={'X-API-Key':KEY};image=image_bytes(224)
     default=client.post('/v1/predict',headers=headers,files={'file':('generated.png',image,'image/png')}).json()
-    assert default['api_version']=='1.2.0'
+    assert default['api_version']=='1.3.0'
     assert default['selected_model']=='lowres' and default['result']==default['scores']['lowres']
     assert default['threshold']==0.5
     legacy=client.post('/v1/predict?model=adapted',headers=headers,files={'file':('generated.png',image,'image/png')}).json()
